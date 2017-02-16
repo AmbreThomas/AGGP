@@ -3,10 +3,10 @@
 int	main(void)
 {
 	igraph_real_t	avg_path;
-	igraph_t	graph;
+	igraph_t		graph;
 	igraph_vector_t	dimvector;
 	igraph_vector_t	edges;
-	int 		i;
+	int 			i;
 
 	igraph_vector_init(&dimvector, 2);
 	VECTOR(dimvector)[0] = 30;
