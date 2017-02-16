@@ -1,48 +1,35 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: elopvet <marvin@42.fr>                     +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2016/07/18 14:13:15 by elopvet           #+#    #+#              #
-#    Updated: 2016/07/27 12:26:55 by athomas          ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+NAME = gengraph
 
-NAME = bsq
-
-SRC_PATH = srcs
-SRC_NAME = affichage.c \
-		   main.c \
-		   lire_fichier.c \
-		   ft_argtostr.c \
-		   tools.c \
-		   conversion.c \
-		   caractere.c \
-		   resolution.c \
-		   error.c \
-		   resolution2.c
+SRC_PATH = src
+SRC_NAME = Population.cpp \
+		   main.cpp \
+		   Graph.cpp
 SRC = $(addprefix $(SRC_PATH)/, $(SRC_NAME))
 
 OBJ_PATH = obj
-OBJ_NAME = $(SRC_NAME:.c=.o)
+OBJ_NAME = $(SRC_NAME:.cpp=.o)
 OBJ = $(addprefix $(OBJ_PATH)/, $(OBJ_NAME))
 
-CC = gcc
+CC = g++
 CFLAGS = -Wall -Werror -Wextra
 
-INCLUDES_PATH = includes
-CPPFLAGS = -I $(INCLUDES_PATH)
+INCLUDES_PATH = /usr/local/include/igraph
+LIBRARY_PATH = /usr/local/lib
+CPPFLAGS = -I $(INCLUDES_PATH) -I $(SRC_PATH) -L $(LIBRARY_PATH) -ligraph
 
 .PHONY:				all, clean, fclean, re
 
 all:				$(NAME)
 
 $(NAME):			$(OBJ)
-					$(CC) $(OBJ) -o $(NAME)
+					export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+					$(CC) $(OBJ) $(CPPFLAGS) -o $(NAME)
 
-$(OBJ_PATH)/%.o:	$(SRC_PATH)/%.c
+$(OBJ_PATH)/%.o:	$(SRC_PATH)/%.cpp $(SRC_PATH)/%.h
+					@mkdir $(OBJ_PATH) 2> /dev/null || true
+					$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
+					
+obj/main.o:			$(SRC_PATH)/main.cpp
 					@mkdir $(OBJ_PATH) 2> /dev/null || true
 					$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 
