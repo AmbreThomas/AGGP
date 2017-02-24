@@ -11,7 +11,7 @@ OBJ_NAME = $(SRC_NAME:.cpp=.o)
 OBJ = $(addprefix $(OBJ_PATH)/, $(OBJ_NAME))
 
 CC = g++
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -g
 
 INCLUDES_PATH = /usr/local/include/igraph
 LIBRARY_PATH = /usr/local/lib
@@ -28,7 +28,7 @@ $(NAME):			$(OBJ)
 $(OBJ_PATH)/%.o:	$(SRC_PATH)/%.cpp $(SRC_PATH)/%.h
 					@mkdir $(OBJ_PATH) 2> /dev/null || true
 					$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
-					
+
 obj/main.o:			$(SRC_PATH)/main.cpp
 					@mkdir $(OBJ_PATH) 2> /dev/null || true
 					$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<

@@ -23,9 +23,8 @@ class Graph
 		//==================== PROTECTED METHODS =======================
 		
 		//======================= ATTRIBUTES ===========================
-		igraph_t				graph;
-		igraph_vector_t			dim;
-		igraph_vector_t			weights;
+		igraph_t*				graph;
+		igraph_vector_t*		weights;
 		static igraph_real_t	LAW_EXPONENT;
 };
 
