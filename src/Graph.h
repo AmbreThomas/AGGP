@@ -18,7 +18,7 @@ class Graph
 		//====================== OPERATORS =============================
 		
 		//==================== PUBLIC METHODS ==========================
-		void	average_path_length(void);
+		float	average_path_length(void);
 	protected:
 		//==================== PROTECTED METHODS =======================
 		

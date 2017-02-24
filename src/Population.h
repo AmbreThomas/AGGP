@@ -1,26 +1,31 @@
-#ifndef Graph_H__
-#define Graph_H__
+#ifndef Population_H__
+#define Population_H__
+
+#include <vector>
+#include "Graph.h"
 
 class Population
 {
 	public:
 		//================== CONSTRUCTORS ==============================
-		Population(int);
+		Population(int, int, int);
 		//================== DESTRUCTORS ===============================
-		
+		~Population(void);
 		//==================== GETTERS =================================
-		
+		int		size(void);
+		Graph	getgraph(int);
 		//===================== SETTERS ================================
 		
 		//====================== OPERATORS =============================
 		
 		//==================== PUBLIC METHODS ==========================
-	
+
 	protected:
 		//==================== PROTECTED METHODS =======================
 		
 		//======================= ATTRIBUTES ===========================
-		
+		std::vector<Graph*>	pop_;
+		int					size_;
 };
 
 
@@ -33,5 +38,5 @@ class Population
 //=================== INLINE FUNCTIONS DEFINITIONS =====================
 
 
-#endif // Graphe_H__
+#endif // Population_H__
 

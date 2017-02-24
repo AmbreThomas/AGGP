@@ -38,6 +38,7 @@ Graph::Graph(int n, int edges)
 }
 
 //=========================== DESTRUCTORS ==============================
+
 Graph::~Graph()
 {
 	igraph_vector_destroy(&dim);
@@ -48,11 +49,11 @@ Graph::~Graph()
 
 //=========================== PUBLIC METHODS ===========================
 
-void	Graph::average_path_length(void)
+float	Graph::average_path_length(void)
 {
 	igraph_real_t	avg_path;
 	igraph_average_path_length(&graph, &avg_path, IGRAPH_UNDIRECTED, 1);
-	printf("Average path length:	%f\n", (double) avg_path);
+	return ((float) avg_path);
 }
 
 //========================== PROTECTED METHODS =========================
