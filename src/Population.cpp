@@ -9,16 +9,16 @@ using namespace std;
 
 
 //=========================== CONSTRUCTORS =============================
-Population::Population()
+Population::Population(int a)
 {
-	
+	a = a+1;
 }
 
 //=========================== DESTRUCTORS ==============================
-Population::~Population()
-{
+//~ Population::~Population()
+//~ {
 	
-}
+//~ }
 
 
 //=========================== PUBLIC METHODS ===========================

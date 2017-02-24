@@ -1,13 +1,16 @@
 #ifndef Graph_H__
 #define Graph_H__
 
-class Graph 
+#include <igraph.h>
+
+class Graph
 {
 	public:
 		//================== CONSTRUCTORS ==============================
-		
+		Graph();
+		Graph(int, int);
 		//================== DESTRUCTORS ===============================
-		
+		~Graph();
 		//==================== GETTERS =================================
 		
 		//===================== SETTERS ================================
@@ -15,12 +18,15 @@ class Graph
 		//====================== OPERATORS =============================
 		
 		//==================== PUBLIC METHODS ==========================
-	
+		void	average_path_length(void);
 	protected:
 		//==================== PROTECTED METHODS =======================
 		
 		//======================= ATTRIBUTES ===========================
-		
+		igraph_t				graph;
+		igraph_vector_t			dim;
+		igraph_vector_t			weights;
+		static igraph_real_t	LAW_EXPONENT;
 };
 
 
