@@ -5,13 +5,15 @@ using namespace sf;
 int	main(void)
 {
     unsigned int	iter(0);
-    unsigned int	Ngraphs, Nnodes, Nedges;
+    unsigned int	Ngraphs, Nnodes, Nedges, itermax;
     
+    //===================== PARAMETERS DEFININTION =====================
+    itermax	=	1;
     
     //===================== POPULATION GENERATION ======================
-	Ngraphs = 100;
-	Nnodes = 100;
-	Nedges = 300;
+	Ngraphs	= 	100;
+	Nnodes	= 	100;
+	Nedges 	= 	300;
 	Population	experiment1 = Population(Ngraphs, Nnodes, Nedges);
 	printf("Creation of %d graphs completed, with %d nodes and %d edges in each.\n", Ngraphs, Nnodes, Nedges);
 	printf("The nodes were built with a power law degree distribution, which power parameter is %f.\n", Graph::LAW_EXPONENT);
