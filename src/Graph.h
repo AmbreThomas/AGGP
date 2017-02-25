@@ -2,6 +2,7 @@
 #define Graph_H__
 
 #include <igraph.h>
+#include <SFML/Graphics.hpp>
 
 class Graph
 {
@@ -19,6 +20,7 @@ class Graph
 		
 		//==================== PUBLIC METHODS ==========================
 		float	average_path_length(void);
+		void draw(sf::RenderWindow w);
 	protected:
 		//==================== PROTECTED METHODS =======================
 		
