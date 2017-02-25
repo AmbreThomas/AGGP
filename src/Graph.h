@@ -2,32 +2,42 @@
 #define Graph_H__
 
 #include <igraph.h>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
 #include <SFML/Graphics.hpp>
+
+//============================ FUNCTIONS ===============================
+
+void	print_vector(igraph_vector_t *);
 
 class Graph
 {
 	public:
-		//================== CONSTRUCTORS ==============================
+		//====================== CONSTRUCTORS ==========================
 		Graph();
 		Graph(int, int);
-		//================== DESTRUCTORS ===============================
+		//====================== DESTRUCTORS ===========================
 		~Graph();
-		//==================== GETTERS =================================
+		//====================== GETTERS ===============================
 		
-		//===================== SETTERS ================================
+		//====================== SETTERS ===============================
 		
 		//====================== OPERATORS =============================
 		
 		//==================== PUBLIC METHODS ==========================
-		float	average_path_length(void);
-		void draw(sf::RenderWindow* w);
+		float					average_path_length(void);
+		double					cost(void);
+		void 					draw(sf::RenderWindow w);
+		//==================== PUBLIC ATTRIBUTES =======================
+		static igraph_real_t	LAW_EXPONENT;
 	protected:
 		//==================== PROTECTED METHODS =======================
 		
 		//======================= ATTRIBUTES ===========================
 		igraph_t*				graph_;
 		igraph_vector_t*		weights_;
-		static igraph_real_t	LAW_EXPONENT;
+		size_t		 			Nnodes_;
 };
 
 
