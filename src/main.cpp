@@ -1,13 +1,9 @@
 #include "Population.h"
-#include <cstdlib>
-#include <SFML/Graphics.hpp>
 
 using namespace sf;
 
 int	main(void)
 {
-	RenderWindow	window( VideoMode(500, 500), "Resulting biological network");
-    CircleShape 	circle(10.f);
     unsigned int	iter(0);
     unsigned int	Ngraphs, Nnodes, Nedges;
     

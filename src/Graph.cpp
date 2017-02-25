@@ -97,7 +97,8 @@ void	Graph::draw(sf::RenderWindow* w)
 {
 	igraph_matrix_t m;
 	igraph_matrix_init(&m,1,1);
-	igraph_layout_lgl(graph_,&m,150,igraph_vcount(graph_));
+	
+	igraph_layout_lgl(graph_,&m,150,(igraph_real_t)Nnodes_,pow(Nnodes_,2),1.5,pow(Nnodes_,3),sqrt(Nnodes_),0);
 	w->clear();
 }
 //========================== PROTECTED METHODS =========================
