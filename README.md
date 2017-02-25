@@ -7,7 +7,7 @@ Sur un debian:
 `wget http://igraph.org/nightly/get/c/igraph-0.7.1.tar.gz̀`   
 `tar -xvzf igraph-0.7.1.tar.gz`   
 `cd igraph-0.7.1`   
-`sudo apt-get install build-essential libxml2-dev`   
+`sudo apt-get install build-essential libxml2-dev libsfml-dev`   
 `./configure`   
 `make`   
 `make check`   

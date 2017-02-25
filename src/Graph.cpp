@@ -33,7 +33,9 @@ Graph::~Graph()
 	//~ free(VECTOR(*weights));
 	//~ free(weights);
 	igraph_vector_destroy(weights);
+	//~ igraph_free(weights);
 	igraph_destroy(graph);
+	//~ igraph_free(graph);
 }
 
 

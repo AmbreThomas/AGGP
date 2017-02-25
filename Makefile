@@ -15,7 +15,7 @@ CFLAGS = -Wall -Werror -Wextra -g
 
 INCLUDES_PATH = /usr/local/include/igraph
 LIBRARY_PATH = /usr/local/lib
-CPPFLAGS = -I $(INCLUDES_PATH) -I $(SRC_PATH) -L $(LIBRARY_PATH) -ligraph
+CPPFLAGS = -I $(INCLUDES_PATH) -I $(SRC_PATH) -L $(LIBRARY_PATH) -ligraph -lsfml-graphics -lsfml-window -lsfml-system
 
 .PHONY:				all, clean, fclean, re
 
