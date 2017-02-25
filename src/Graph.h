@@ -5,8 +5,10 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
+#include <SFML/Graphics.hpp>
 
 //============================ FUNCTIONS ===============================
+
 void	print_vector(igraph_vector_t *);
 
 class Graph
@@ -26,6 +28,7 @@ class Graph
 		//==================== PUBLIC METHODS ==========================
 		float					average_path_length(void);
 		double					cost(void);
+		void 					draw(sf::RenderWindow w);
 		//==================== PUBLIC ATTRIBUTES =======================
 		static igraph_real_t	LAW_EXPONENT;
 	protected:
