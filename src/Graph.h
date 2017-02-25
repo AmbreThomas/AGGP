@@ -2,30 +2,39 @@
 #define Graph_H__
 
 #include <igraph.h>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+
+//============================ FUNCTIONS ===============================
+void	print_vector(igraph_vector_t *);
 
 class Graph
 {
 	public:
-		//================== CONSTRUCTORS ==============================
+		//====================== CONSTRUCTORS ==========================
 		Graph();
 		Graph(int, int);
-		//================== DESTRUCTORS ===============================
+		//====================== DESTRUCTORS ===========================
 		~Graph();
-		//==================== GETTERS =================================
+		//====================== GETTERS ===============================
 		
-		//===================== SETTERS ================================
+		//====================== SETTERS ===============================
 		
 		//====================== OPERATORS =============================
 		
 		//==================== PUBLIC METHODS ==========================
-		float	average_path_length(void);
+		float					average_path_length(void);
+		double					cost(void);
+		//==================== PUBLIC ATTRIBUTES =======================
+		static igraph_real_t	LAW_EXPONENT;
 	protected:
 		//==================== PROTECTED METHODS =======================
 		
 		//======================= ATTRIBUTES ===========================
-		igraph_t*				graph;
-		igraph_vector_t*		weights;
-		static igraph_real_t	LAW_EXPONENT;
+		igraph_t*				graph_;
+		igraph_vector_t*		weights_;
+		size_t		 			Nnodes_;
 };
 
 

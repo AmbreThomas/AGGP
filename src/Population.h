@@ -8,24 +8,27 @@ class Population
 {
 	public:
 		//================== CONSTRUCTORS ==============================
-		Population(int, int, int);
+		Population(unsigned int, unsigned int, unsigned int);
 		//================== DESTRUCTORS ===============================
 		~Population(void);
 		//==================== GETTERS =================================
-		int		size(void);
+		size_t	size(void);
 		Graph	getgraph(int);
 		//===================== SETTERS ================================
 		
 		//====================== OPERATORS =============================
 		
 		//==================== PUBLIC METHODS ==========================
-
+		void	cross(void);
+		void 	mutate_children(void);
+		void	select_by_tournament(void);
+		void	select_elite(void);
 	protected:
 		//==================== PROTECTED METHODS =======================
 		
 		//======================= ATTRIBUTES ===========================
 		std::vector<Graph*>	pop_;
-		int					size_;
+		size_t				size_;
 };
 
 

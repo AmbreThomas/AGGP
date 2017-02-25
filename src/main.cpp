@@ -2,37 +2,49 @@
 #include <cstdlib>
 #include <SFML/Graphics.hpp>
 
+using namespace sf;
+
 int	main(void)
 {
-	float	avg_path_len;
-
-	//100 graphes of 30 nodes and 100 edges:
-	Population	experiment1 = Population(100, 100, 300);
-	printf("Creation terminée.\n\n");
-	for( int i = 0; i<experiment1.size(); i++ ){
-		avg_path_len = experiment1.getgraph(i).average_path_length();
-		printf("Average path length of graph %d : %f\n", i+1, avg_path_len);
-	}
-	printf("ça, c'est fait...\n\n");
+	RenderWindow	window( VideoMode(500, 500), "Resulting biological network");
+    CircleShape 	circle(10.f);
+    unsigned int	iter(0);
+    unsigned int	Ngraphs, Nnodes, Nedges;
+    
+    
+    //===================== POPULATION GENERATION ======================
+	Ngraphs = 100;
+	Nnodes = 100;
+	Nedges = 300;
+	Population	experiment1 = Population(Ngraphs, Nnodes, Nedges);
+	printf("Creation of %d graphs completed, with %d nodes and %d edges in each.\n", Ngraphs, Nnodes, Nedges);
+	printf("The nodes were built with a power law degree distribution, which power parameter is %f.\n", Graph::LAW_EXPONENT);
 	
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-
+	//===================== MAIN LOOP ==================================
+	while (iter<1)
+	{
+		experiment1.cross(); 				//population size N ==> 2N
+		experiment1.mutate_children();		//population size 2N
+		experiment1.select_by_tournament();	//population size 2N ==> N
+		//~ experiment1.select_elite();			//population size 2N ==> N
+		iter++;
+	}
+	
+	//===================== DISPLAY RESULTS ============================
+    circle.setFillColor( Color::Blue );
     while (window.isOpen())
     {
-        sf::Event event;
+        Event 	event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if (event.type == Event::Closed)
                 window.close();
         }
-
         window.clear();
-        window.draw(shape);
+        window.draw(circle);
         window.display();
     }
 
-	return (0);
+	return 0;
 }
 

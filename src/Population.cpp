@@ -10,9 +10,9 @@ using namespace std;
 
 //=========================== CONSTRUCTORS =============================
 
-Population::Population(int n, int Nnodes, int Nedges)
+Population::Population(unsigned int n, unsigned int Nnodes, unsigned int Nedges)
 {
-	for (int i = 0; i<n; i++){
+	for (unsigned int i = 0; i<n; i++){
 		pop_.push_back(new Graph(Nnodes, Nedges));
 	}
 	size_ = n;
@@ -30,11 +30,32 @@ Population::~Population(void)
 
 //=========================== PUBLIC METHODS ===========================
 
-int		Population::size(void)
-{ return (size_); }
+size_t	Population::size(void) { return (size_); }
 
-Graph 	Population::getgraph(int i)
-{ return (*pop_[i]); }
+Graph 	Population::getgraph(int i) { return (*pop_[i]); }
+
+void	Population::cross(void)
+{
+	
+}
+
+void	Population::mutate_children(void)
+{
+	
+}
+
+void	Population::select_by_tournament(void)
+{
+	for (unsigned int i = 0; i<size_; i++){
+		printf("Graphe %d: ",i+1);
+		pop_[i]->cost();
+	}
+}
+
+void	Population::select_elite(void)
+{
+	
+}
 
 //========================== PROTECTED METHODS =========================
 
