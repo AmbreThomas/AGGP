@@ -15,6 +15,8 @@ int	main(void)
 	}
 	printf("ça, c'est fait...\n\n");
 	
+	Graph best_graph = experiment1.getgraph(0);
+	
 	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
@@ -29,6 +31,7 @@ int	main(void)
 		}
 
 		window.clear();
+		best_graph.draw(&window);
 		window.draw(shape);
 		window.display();
 	}

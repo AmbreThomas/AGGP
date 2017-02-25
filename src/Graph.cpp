@@ -48,6 +48,13 @@ float	Graph::average_path_length(void)
 	return ((float) avg_path);
 }
 
+void	Graph::draw(sf::RenderWindow* w)
+{
+	igraph_matrix_t m;
+	igraph_matrix_init(&m,1,1);
+	igraph_layout_lgl(graph_,&m,150,igraph_vcount(graph_));
+	w->clear();
+}
 //========================== PROTECTED METHODS =========================
 
 //============================ FUNCTIONS ===============================

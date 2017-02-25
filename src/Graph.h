@@ -20,13 +20,13 @@ class Graph
 		
 		//==================== PUBLIC METHODS ==========================
 		float	average_path_length(void);
-		void draw(sf::RenderWindow w);
+		void draw(sf::RenderWindow* w);
 	protected:
 		//==================== PROTECTED METHODS =======================
 		
 		//======================= ATTRIBUTES ===========================
-		igraph_t*				graph;
-		igraph_vector_t*		weights;
+		igraph_t*				graph_;
+		igraph_vector_t*		weights_;
 		static igraph_real_t	LAW_EXPONENT;
 };
 
