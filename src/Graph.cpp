@@ -111,7 +111,7 @@ void	Graph::draw(sf::RenderWindow* w)
 	igraph_matrix_get_col(&coords_,&pos_y,1);
 	igraph_real_t min_y=igraph_vector_min(&pos_y);
 	igraph_real_t max_y=igraph_vector_max(&pos_y);
-	sf::Vector2u w_size = w->getSize();
+	sf::Vector2f w_size = w->getView().getSize();
 	float x_factor=(float)w_size.x/(float)1.1/(float)(max_x-min_x);
 	float x_base=(float)w_size.x*(float)(0.05/1.1);
 	float y_factor=(float)w_size.y/(float)1.1/(float)(max_y-min_y);

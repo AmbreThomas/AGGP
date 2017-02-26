@@ -43,7 +43,6 @@ int	main(void)
 					window.close();
 					break;
 				case Event::Resized:
-					window.setView(View(FloatRect(0,0, (float)event.size.width, (float)event.size.height)));
 					break;
 				default:
 					break;
