@@ -1,7 +1,5 @@
 //============================ INCLUDES ================================
 #include "Population.h"
-#include <cstdio>
-#include <cstdlib>
 
 using namespace std;
 
@@ -47,8 +45,7 @@ void	Population::mutate_children(void)
 void	Population::select_by_tournament(void)
 {
 	for (unsigned int i = 0; i<size_; i++){
-		printf("Graphe %d: ",i+1);
-		pop_[i]->cost();
+		printf("Graphe %d: \t%f\n",i+1, pop_[i]->cost());
 	}
 }
 

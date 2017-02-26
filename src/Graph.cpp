@@ -50,7 +50,7 @@ float	Graph::average_path_length(void)
 
 double 	Graph::cost(void)
 {
-	double				nk, cost1, cost2, cost3;
+	double				nk, cost1, cost2, cost3, cost;
 	igraph_integer_t 	d, kmax;
 	igraph_vector_t 	degrees, n_of_degree, clust_coeffs;
 	
@@ -84,8 +84,8 @@ double 	Graph::cost(void)
 	igraph_diameter(graph_, &d, 0, 0, 0, IGRAPH_UNDIRECTED, 0);
 	cost3 	= 	((double) abs(d - log((double)Nnodes_)))/(log((double)Nnodes_));
 	
-	double	cost(sqrt(cost1*cost1 + cost2*cost2 + cost3*cost3));
-	printf("cost = ||%f, %f, %f|| = %f\n",cost1, cost2, cost3, cost);
+	cost	=	sqrt(cost1*cost1 + cost2*cost2 + cost3*cost3);
+	//~ printf("cost = ||%f, %f, %f|| = %f\n",cost1, cost2, cost3, cost);
 	
 	
 	igraph_vector_destroy(&degrees);

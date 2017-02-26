@@ -11,7 +11,7 @@ int	main(void)
     itermax	=	1;
     
     //===================== POPULATION GENERATION ======================
-	Ngraphs	= 	100;
+	Ngraphs	= 	10;
 	Nnodes	= 	100;
 	Nedges 	= 	300;
 	Population	experiment1 = Population(Ngraphs, Nnodes, Nedges);
@@ -31,14 +31,23 @@ int	main(void)
 	//===================== DISPLAY RESULTS ============================
 	Graph best_graph = experiment1.getgraph(0);
 	best_graph.compute_layout();
-	RenderWindow window(VideoMode(400, 400), "SFML works!");
+	RenderWindow window(VideoMode(400, 400), "Best Biological Network");
 	while (window.isOpen())
 	{
 		Event event;
 		while (window.pollEvent(event))
 		{
-			if (event.type == Event::Closed)
-				window.close();
+			switch (event.type) 
+			{
+				case Event::Closed:
+					window.close();
+					break;
+				case Event::Resized:
+					window.setView(View(FloatRect(0,0, (float)event.size.width, (float)event.size.height)));
+					break;
+				default:
+					break;
+			}
 		}
 		window.clear();
 		best_graph.draw(&window);
