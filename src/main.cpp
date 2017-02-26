@@ -16,7 +16,7 @@ int	main(void)
 	Nedges 	= 	300;
 	Population	experiment1 = Population(Ngraphs, Nnodes, Nedges);
 	printf("Creation of %d graphs completed, with %d nodes and %d edges in each.\n", Ngraphs, Nnodes, Nedges);
-	printf("The nodes were built with a power law degree distribution, which power parameter is %f.\n", Graph::LAW_EXPONENT);
+	printf("The nodes were built with a power law degree distribution, which power parameter is %f.\n\n", Graph::LAW_EXPONENT);
 	
 	//===================== MAIN LOOP ==================================
 	while (iter<itermax)
