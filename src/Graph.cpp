@@ -15,11 +15,10 @@ Graph::Graph(int n, int edges)
 	graph_ 	= 	new igraph_t;
 	Nnodes_	= 	n;
 	//~ igraph_static_power_law_game(graph_, n, edges, LAW_EXPONENT, -1, 0, 0, 1);
-	//~ igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
+	//igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
 	igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, 
 						 /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, 
 						 /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
-	
 	//Create the weights on edges, all fixed to 1:
 	weights_ = new igraph_vector_t;
 	igraph_vector_init(weights_, edges);
@@ -27,6 +26,8 @@ Graph::Graph(int n, int edges)
 		VECTOR(*weights_)[i] = 1;
 	}
 	igraph_add_edges(graph_, weights_, 0);
+	//initialize layout matrix
+	igraph_matrix_init(&coords_,Nnodes_,2);
 }
 
 //=========================== DESTRUCTORS ==============================
@@ -93,13 +94,40 @@ double 	Graph::cost(void)
 	return 				(cost);
 }
 
+void	Graph::compute_layout(void)
+{
+	igraph_layout_lgl(graph_,&coords_,150,(igraph_real_t)Nnodes_,pow(Nnodes_,2),1.5,pow(Nnodes_,3),sqrt(Nnodes_),0);
+}
+
 void	Graph::draw(sf::RenderWindow* w)
 {
-	igraph_matrix_t m;
-	igraph_matrix_init(&m,1,1);
-	
-	igraph_layout_lgl(graph_,&m,150,(igraph_real_t)Nnodes_,pow(Nnodes_,2),1.5,pow(Nnodes_,3),sqrt(Nnodes_),0);
-	w->clear();
+	igraph_vector_t pos_x;
+	igraph_vector_init(&pos_x,Nnodes_);
+	igraph_matrix_get_col(&coords_,&pos_x,0);
+	igraph_real_t min_x=igraph_vector_min(&pos_x);
+	igraph_real_t max_x=igraph_vector_max(&pos_x);
+	igraph_vector_t pos_y;
+	igraph_vector_init(&pos_y,Nnodes_);
+	igraph_matrix_get_col(&coords_,&pos_y,1);
+	igraph_real_t min_y=igraph_vector_min(&pos_y);
+	igraph_real_t max_y=igraph_vector_max(&pos_y);
+	sf::Vector2u w_size = w->getSize();
+	float x_factor=(float)w_size.x/(float)1.1/(float)(max_x-min_x);
+	float x_base=(float)w_size.x*(float)(0.05/1.1);
+	float y_factor=(float)w_size.y/(float)1.1/(float)(max_y-min_y);
+	float y_base=(float)w_size.y*(float)(0.05/1.1);
+	sf::CircleShape node_shape;
+	node_shape.setRadius(min(x_factor,y_factor)/4);
+	node_shape.setFillColor(sf::Color::Green);
+	float x;
+	float y;
+	for (size_t n=0; n<Nnodes_; n++)
+	{
+		x=x_base+(float)(igraph_vector_e(&pos_x,n)-min_x)*x_factor;
+		y=y_base+(float)(igraph_vector_e(&pos_y,n)-min_y)*y_factor;
+		node_shape.setPosition(x,y);
+		w->draw(node_shape);
+	}
 }
 //========================== PROTECTED METHODS =========================
 

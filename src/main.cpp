@@ -19,7 +19,7 @@ int	main(void)
 	printf("The nodes were built with a power law degree distribution, which power parameter is %f.\n", Graph::LAW_EXPONENT);
 	
 	//===================== MAIN LOOP ==================================
-	while (iter<1)
+	while (iter<itermax)
 	{
 		experiment1.cross(); 				//population size N ==> 2N
 		experiment1.mutate_children();		//population size 2N
@@ -30,11 +30,8 @@ int	main(void)
 
 	//===================== DISPLAY RESULTS ============================
 	Graph best_graph = experiment1.getgraph(0);
-	
-	RenderWindow window(VideoMode(200, 200), "SFML works!");
-	CircleShape shape(100.f);
-	shape.setFillColor(Color::Green);
-
+	best_graph.compute_layout();
+	RenderWindow window(VideoMode(400, 400), "SFML works!");
 	while (window.isOpen())
 	{
 		Event event;
@@ -45,7 +42,6 @@ int	main(void)
 		}
 		window.clear();
 		best_graph.draw(&window);
-		window.draw(shape);
 		window.display();
 	}
 
