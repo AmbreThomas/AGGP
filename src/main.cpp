@@ -7,11 +7,13 @@ int	main(void)
     unsigned int	iter(0);
     unsigned int	Ngraphs, Nnodes, Nedges, itermax;
     
+    srand((unsigned int)time(NULL));
+    
     //===================== PARAMETERS DEFININTION =====================
-    itermax	=	1;
+    itermax	=	10;
     
     //===================== POPULATION GENERATION ======================
-	Ngraphs	= 	10;
+	Ngraphs	= 	100;
 	Nnodes	= 	100;
 	Nedges 	= 	300;
 	Population	experiment1 = Population(Ngraphs, Nnodes, Nedges);
@@ -21,11 +23,11 @@ int	main(void)
 	//===================== MAIN LOOP ==================================
 	while (iter<itermax)
 	{
+		printf("  Iteration %d:\n", iter++);
 		experiment1.cross(); 				//population size N ==> 2N
 		experiment1.mutate_children();		//population size 2N
 		experiment1.select_by_tournament();	//population size 2N ==> N
 		//~ experiment1.select_elite();			//population size 2N ==> N
-		iter++;
 	}
 
 	//===================== DISPLAY RESULTS ============================
@@ -42,9 +44,9 @@ int	main(void)
 				case Event::Closed:
 					window.close();
 					break;
-				case Event::Resized:
-					window.setView(View(FloatRect(0,0, (float)event.size.width, (float)event.size.height)));
-					break;
+				//~ case Event::Resized:
+					//~ window.setView(View(FloatRect(0,0, (float)event.size.width, (float)event.size.height)));
+					//~ break;
 				default:
 					break;
 			}

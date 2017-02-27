@@ -30,6 +30,43 @@ Graph::Graph(int n, int edges)
 	igraph_matrix_init(&coords_,Nnodes_,2);
 }
 
+Graph::Graph(Graph* parent1, Graph* parent2, int crosspt)
+{
+	graph_ 	= 	new igraph_t;
+	Nnodes_	= 	parent1->Nnodes_;
+	
+	igraph_t	temp1;
+	igraph_t	temp2;
+	igraph_copy(&temp1, parent1->graph_);
+	igraph_copy(&temp2, parent2->graph_);
+	for (unsigned int k = crosspt; k<Nnodes_-1; k++){
+		igraph_es_t	edges;
+		igraph_es_incident(&edges, k, IGRAPH_ALL);
+		igraph_delete_edges(&temp1, edges);
+		igraph_es_destroy(&edges);
+	}
+	for (int k = 0; k<crosspt-1; k++){
+		igraph_es_t		edges;
+		igraph_vector_t	edgev;
+		igraph_vector_init(&edgev, 0);
+		
+		igraph_incident(&temp2, &edgev, k, IGRAPH_ALL);
+		
+		igraph_es_vector(&edges, &edgev);
+		igraph_delete_edges(&temp2, edges);
+		igraph_es_destroy(&edges);
+		igraph_vector_destroy(&edgev);
+	}
+	igraph_union(graph_, &temp1, &temp2, 0, 0);
+	
+	//initialize layout matrix
+	igraph_matrix_init(&coords_,Nnodes_,2);
+	
+	igraph_destroy(&temp1);
+	igraph_destroy(&temp2);
+}
+
+
 //=========================== DESTRUCTORS ==============================
 
 Graph::~Graph()
@@ -129,6 +166,9 @@ void	Graph::draw(sf::RenderWindow* w)
 		w->draw(node_shape);
 	}
 }
+
+size_t	Graph::getN(void) { return (Nnodes_); }
+
 //========================== PROTECTED METHODS =========================
 
 //============================ FUNCTIONS ===============================

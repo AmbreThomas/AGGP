@@ -10,6 +10,8 @@ using namespace std;
 
 Population::Population(unsigned int n, unsigned int Nnodes, unsigned int Nedges)
 {
+	pmut_	=	0.2;
+	pcross_	=	0.3;
 	for (unsigned int i = 0; i<n; i++){
 		pop_.push_back(new Graph(Nnodes, Nedges));
 	}
@@ -39,6 +41,25 @@ void	Population::cross(void)
 	 * 
 	 * Les deux graphes sont ensuite mutés,
 	 * puis ajoutés à la population jusqu'à atteinte de la taille 2N */
+	 
+	unsigned int	i,j, crosspt;
+	
+	while (pop_.size()<2*size_)
+	{
+		i 	= 	rand()%(int)size_;
+		j 	= 	i;
+		while (i==j) j = rand()%(int)size_;
+		if ( (double)rand()/RAND_MAX < pcross_ ){
+			printf("\tCroisement de %i et %i\n",i,j);
+			crosspt	=	rand()%(unsigned int)pop_[i]->getN();
+			Graph*	parent1	=	pop_[i];
+			Graph*	parent2	=	pop_[j];
+			Graph*	child1	=	new Graph(parent1, parent2, crosspt);
+			Graph*	child2	=	new Graph(parent1, parent2, crosspt);
+			pop_.push_back(child1);
+			pop_.push_back(child2);
+		}
+	}
 }
 
 void	Population::mutate_children(void)
