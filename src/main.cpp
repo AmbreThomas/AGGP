@@ -5,7 +5,7 @@ using namespace sf;
 void	printTime_str(const struct tm*);
 void	printDiffTime_str(int);
 
-int		main(void)
+int		main(int argc, char** argv)
 {
     unsigned int	iter(0);
     unsigned int	Ngraphs, Nnodes, Nedges, itermax;
@@ -14,20 +14,26 @@ int		main(void)
     srand((unsigned int)time(NULL));
     startTime	=	time(NULL);
     
-    //===================== PARAMETERS DEFININTION =====================
-    itermax	=	10;
-    
     //===================== POPULATION GENERATION ======================
-	Ngraphs	= 	100;
-	Nnodes	= 	1000;
-	Nedges 	= 	3000;
+    if (argc<5){
+		printf("./gengraph Ngraphs Nnodes Nedges Niter\n\nusing default parameters...\n\n");
+		Ngraphs	= 	1000;
+		Nnodes	= 	1000;
+		Nedges 	= 	3000;
+		itermax	=	100;
+	} else {
+		Ngraphs	= 	atoi(argv[1]);
+		Nnodes	= 	atoi(argv[2]);
+		Nedges 	= 	atoi(argv[3]);
+		itermax	=	atoi(argv[4]);
+	}
 	Population	experiment1 = Population(Ngraphs, Nnodes, Nedges);
 	printf("Creation of %d graphs completed, with %d nodes and %d edges in each.\n", Ngraphs, Nnodes, Nedges);
 	printf("The nodes were built with a power law degree distribution, which power parameter is %f.\n\n", Graph::LAW_EXPONENT);
 	printf("\n");
 	printTime_str(localtime(&startTime));
 	printf(" : Expect end of computation in %d minutes.\n\n", 
-			(int)Nedges/1000000*Ngraphs*itermax);
+			(int)(Nedges/1000000.0*Ngraphs*itermax));
 	
 	//===================== MAIN LOOP ==================================
 	while (iter<itermax)
@@ -92,5 +98,5 @@ void	printDiffTime_str(int diff)
 	if (days) 	printf("%dd ", days);
 	if (hours) 	printf("%d° ", hours);
 	if (min) 	printf("%d' ", min);
-	printf("%d\" ", sec);
+	printf("%d\"", sec);
 }
