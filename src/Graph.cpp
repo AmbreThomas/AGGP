@@ -170,6 +170,20 @@ void	Graph::draw(sf::RenderWindow* w)
 void	Graph::mutate(void)
 {
 	/* On a une probabilité de changer le point d'accroche d'un edge. */
+
+	igraph_integer_t	edgeid, from, to, newattach;
+	bool				side;
+	
+	edgeid		=	rand()%(unsigned int)igraph_ecount(graph_);
+	side		=	rand()%2;
+	newattach	=	rand()%(unsigned int)Nnodes_;
+	igraph_edge(graph_, edgeid, &from, &to);
+	igraph_delete_edges(graph_, igraph_ess_1(edgeid));
+	if (side) {
+		igraph_add_edge(graph_, from, newattach);
+	} else {
+		igraph_add_edge(graph_, newattach, to);
+	}
 }
 
 size_t	Graph::getN(void) { return (Nnodes_); }
