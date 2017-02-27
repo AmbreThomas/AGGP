@@ -47,17 +47,23 @@ Graph::Graph(Graph* parent1, Graph* parent2, int crosspt)
 		igraph_delete_edges(&temp1, edges);
 		igraph_es_destroy(&edges);
 	}
-	for (int k = 0; k<crosspt-1; k++){
+	for (igraph_integer_t k = 0; k<crosspt-1; k++){
 		igraph_es_t		edges;
-		igraph_vector_t	edgev;
-		igraph_vector_init(&edgev, 0);
+		igraph_eit_t	iterator;
 		
-		igraph_incident(&temp2, &edgev, k, IGRAPH_ALL);
-		
-		igraph_es_vector(&edges, &edgev);
-		igraph_delete_edges(&temp2, edges);
+		igraph_es_incident(&edges, k, IGRAPH_ALL);
+		printf("%d, ok ?\n",k);
+		igraph_eit_create(graph_, edges, &iterator);
+		IGRAPH_EIT_RESET(iterator);
+		printf("go\n");
+		while (!IGRAPH_EIT_END(iterator)) {
+			IGRAPH_EIT_NEXT(iterator);
+			
+			igraph_delete_edges(&temp2, igraph_ess_1(IGRAPH_EIT_GET(iterator)));			
+		}
+		printf("hop\n");
 		igraph_es_destroy(&edges);
-		igraph_vector_destroy(&edgev);
+		igraph_eit_destroy(&iterator);
 	}
 	igraph_union(graph_, &temp1, &temp2, 0, 0);
 	
