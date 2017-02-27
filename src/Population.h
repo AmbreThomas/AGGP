@@ -30,7 +30,6 @@ class Population
 		//======================= ATTRIBUTES ===========================
 		std::vector<Graph*>	pop_;
 		double				pcross_;
-		double				pmut_;
 		size_t				size_;
 };
 

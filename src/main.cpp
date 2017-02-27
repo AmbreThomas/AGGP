@@ -2,24 +2,29 @@
 
 using namespace sf;
 
-int	main(void)
+void	printTime_str(void);
+
+int		main(void)
 {
     unsigned int	iter(0);
     unsigned int	Ngraphs, Nnodes, Nedges, itermax;
-    
+	
     srand((unsigned int)time(NULL));
+	
     
     //===================== PARAMETERS DEFININTION =====================
-    itermax	=	10;
+    itermax	=	100;
     
     //===================== POPULATION GENERATION ======================
-	Ngraphs	= 	100;
-	Nnodes	= 	100;
-	Nedges 	= 	300;
+	Ngraphs	= 	1000;
+	Nnodes	= 	1000;
+	Nedges 	= 	3000;
 	Population	experiment1 = Population(Ngraphs, Nnodes, Nedges);
 	printf("Creation of %d graphs completed, with %d nodes and %d edges in each.\n", Ngraphs, Nnodes, Nedges);
 	printf("The nodes were built with a power law degree distribution, which power parameter is %f.\n\n", Graph::LAW_EXPONENT);
-	
+	printf("=============================================================================================\n");
+	printTime_str();
+	printf(" : Expect end of computation in %d minutes.\n\n", (int)Nedges/1000*itermax);
 	//===================== MAIN LOOP ==================================
 	while (iter<itermax)
 	{
@@ -58,3 +63,14 @@ int	main(void)
 	return 0;
 }
 
+void	printTime_str(void)
+{
+    time_t 			rawtime;
+	struct tm*	 	timeinfo;
+	char 			buffer[80];
+	
+	time (&rawtime);
+	timeinfo = localtime (&rawtime);
+	strftime (buffer,80,"%I:%M%p.",timeinfo);
+	printf("%s",buffer);
+}

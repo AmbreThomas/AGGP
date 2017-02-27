@@ -42,6 +42,7 @@ class Graph
 		igraph_t*				graph_;
 		igraph_vector_t*		weights_;
 		size_t		 			Nnodes_;
+		double					pmut_;
 };
 
 

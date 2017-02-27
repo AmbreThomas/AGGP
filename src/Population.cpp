@@ -10,7 +10,6 @@ using namespace std;
 
 Population::Population(unsigned int n, unsigned int Nnodes, unsigned int Nedges)
 {
-	pmut_	=	0.3;
 	pcross_	=	0.1;
 	for (unsigned int i = 0; i<n; i++){
 		pop_.push_back(new Graph(Nnodes, Nedges));
@@ -46,7 +45,7 @@ void	Population::cross(void)
 	 
 	unsigned int	i,j, crosspt;
 	
-	printf("\tCroisement...\n");
+	printf("\tCrossing graphs...\n");
 	while (pop_.size()<2*size_)
 	{
 		i 	= 	rand()%(int)size_;
@@ -81,6 +80,7 @@ void	Population::select_by_tournament(void)
 	 
 	vector<double>	costs(size_, 100);
 	
+	printf("\tSelecting graphs by tournament...\n");
 	for (unsigned int i = 0; i<size_; i++){
 		costs[i] = pop_[i]->cost();
 	}
@@ -95,6 +95,7 @@ void	Population::select_elite(void)
 	 
 	vector<double>	costs(size_, 100);
 	
+	printf("\tSelecting th graphs' elite...\n");
 	for (unsigned int i = 0; i<size_; i++){
 		costs[i] = pop_[i]->cost();
 	}

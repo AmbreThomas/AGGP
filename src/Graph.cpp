@@ -14,6 +14,7 @@ Graph::Graph(int n, int edges)
 	//Create the random graph with degree law:
 	graph_ 	= 	new igraph_t;
 	Nnodes_	= 	n;
+	pmut_	=	0.3;
 	//~ igraph_static_power_law_game(graph_, n, edges, LAW_EXPONENT, -1, 0, 0, 1);
 	//igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
 	igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, 
@@ -34,6 +35,7 @@ Graph::Graph(Graph* parent1, Graph* parent2, int crosspt)
 {
 	graph_ 	= 	new igraph_t;
 	Nnodes_	= 	parent1->Nnodes_;
+	pmut_	=	0.3;
 	
 	igraph_t	temp1;
 	igraph_t	temp2;
@@ -173,16 +175,18 @@ void	Graph::mutate(void)
 
 	igraph_integer_t	edgeid, from, to, newattach;
 	bool				side;
-	
-	edgeid		=	rand()%(unsigned int)igraph_ecount(graph_);
-	side		=	rand()%2;
-	newattach	=	rand()%(unsigned int)Nnodes_;
-	igraph_edge(graph_, edgeid, &from, &to);
-	igraph_delete_edges(graph_, igraph_ess_1(edgeid));
-	if (side) {
-		igraph_add_edge(graph_, from, newattach);
-	} else {
-		igraph_add_edge(graph_, newattach, to);
+
+	if (rand()/(double)RAND_MAX < pmut_){
+		edgeid		=	rand()%(unsigned int)igraph_ecount(graph_);
+		side		=	rand()%2;
+		newattach	=	rand()%(unsigned int)Nnodes_;
+		igraph_edge(graph_, edgeid, &from, &to);
+		igraph_delete_edges(graph_, igraph_ess_1(edgeid));
+		if (side) {
+			igraph_add_edge(graph_, from, newattach);
+		} else {
+			igraph_add_edge(graph_, newattach, to);
+		}
 	}
 }
 
