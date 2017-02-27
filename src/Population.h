@@ -15,13 +15,13 @@ class Population
 		//==================== GETTERS =================================
 		size_t	size(void);
 		Graph	getgraph(int);
+		size_t	getCurrentSize(void);
 		//===================== SETTERS ================================
 		
 		//====================== OPERATORS =============================
 		
 		//==================== PUBLIC METHODS ==========================
 		void	cross(void);
-		void 	mutate_children(void);
 		void	select_by_tournament(void);
 		void	select_elite(void);
 	protected:

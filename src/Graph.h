@@ -31,6 +31,7 @@ class Graph
 		double					cost(void);
 		void					compute_layout(void);
 		void 					draw(sf::RenderWindow* w);
+		void 					mutate(void);
 		//==================== PUBLIC ATTRIBUTES =======================
 		static igraph_real_t	LAW_EXPONENT;
 	protected:

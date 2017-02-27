@@ -167,6 +167,11 @@ void	Graph::draw(sf::RenderWindow* w)
 	}
 }
 
+void	Graph::mutate(void)
+{
+	/* On a une probabilité de changer le point d'accroche d'un edge. */
+}
+
 size_t	Graph::getN(void) { return (Nnodes_); }
 
 //========================== PROTECTED METHODS =========================

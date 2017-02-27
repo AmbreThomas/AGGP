@@ -10,8 +10,8 @@ using namespace std;
 
 Population::Population(unsigned int n, unsigned int Nnodes, unsigned int Nedges)
 {
-	pmut_	=	0.2;
-	pcross_	=	0.3;
+	pmut_	=	0.3;
+	pcross_	=	0.1;
 	for (unsigned int i = 0; i<n; i++){
 		pop_.push_back(new Graph(Nnodes, Nedges));
 	}
@@ -34,6 +34,8 @@ size_t	Population::size(void) { return (size_); }
 
 Graph 	Population::getgraph(int i) { return (*pop_[i]); }
 
+size_t 	Population::getCurrentSize(void) { return (pop_.size()); }
+
 void	Population::cross(void)
 {
 	/* On tire deux individus, 
@@ -44,28 +46,26 @@ void	Population::cross(void)
 	 
 	unsigned int	i,j, crosspt;
 	
+	printf("\tCroisement...\n");
 	while (pop_.size()<2*size_)
 	{
 		i 	= 	rand()%(int)size_;
 		j 	= 	i;
 		while (i==j) j = rand()%(int)size_;
-		if ( (double)rand()/RAND_MAX < pcross_ ){
-			printf("\tCroisement de %i et %i\n",i,j);
-			crosspt	=	rand()%(unsigned int)pop_[i]->getN();
-			Graph*	parent1	=	pop_[i];
-			Graph*	parent2	=	pop_[j];
-			Graph*	child1	=	new Graph(parent1, parent2, crosspt);
-			Graph*	child2	=	new Graph(parent1, parent2, crosspt);
-			pop_.push_back(child1);
-			pop_.push_back(child2);
-		}
+		crosspt	=	rand()%(unsigned int)pop_[i]->getN();
+		Graph*	parent1	=	pop_[i];
+		Graph*	parent2	=	pop_[j];
+		Graph*	child1	=	new Graph(parent1, parent2, crosspt);
+		Graph*	child2	=	new Graph(parent1, parent2, crosspt);
+		child1->mutate();
+		child2->mutate();
+		pop_.push_back(child1);
+		pop_.push_back(child2);
 	}
+	//Attention ici le même graphe peut être tiré deux fois.
 }
 
-void	Population::mutate_children(void)
-{
-	/* On a une probabilité de changer le point d'accroche d'un edge. */
-}
+
 
 void	Population::select_by_tournament(void)
 {
