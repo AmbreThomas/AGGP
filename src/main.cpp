@@ -17,10 +17,10 @@ int		main(int argc, char** argv)
     //===================== POPULATION GENERATION ======================
     if (argc<5){
 		printf("./gengraph Ngraphs Nnodes Nedges Niter\n\nusing default parameters...\n\n");
-		Ngraphs	= 	1000;
-		Nnodes	= 	1000;
-		Nedges 	= 	3000;
-		itermax	=	100;
+		Ngraphs	= 	100;
+		Nnodes	= 	100;
+		Nedges 	= 	300;
+		itermax	=	10;
 	} else {
 		Ngraphs	= 	atoi(argv[1]);
 		Nnodes	= 	atoi(argv[2]);

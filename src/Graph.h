@@ -17,7 +17,7 @@ class Graph
 		//====================== CONSTRUCTORS ==========================
 		Graph();
 		Graph(int, int);
-		Graph(Graph*, Graph*, int);
+		Graph(Graph*, Graph*, unsigned int);
 		//====================== DESTRUCTORS ===========================
 		~Graph();
 		//====================== GETTERS ===============================

@@ -51,7 +51,7 @@ void	Population::cross(void)
 		i 	= 	rand()%(int)size_;
 		j 	= 	i;
 		while (i==j) j = rand()%(int)size_;
-		crosspt	=	rand()%(unsigned int)pop_[i]->getN();
+		crosspt	=	(unsigned int) rand()%(unsigned int)pop_[i]->getN();
 		Graph*	parent1	=	pop_[i];
 		Graph*	parent2	=	pop_[j];
 		Graph*	child1	=	new Graph(parent1, parent2, crosspt);

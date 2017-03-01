@@ -16,7 +16,7 @@ Graph::Graph(int n, int edges)
 	Nnodes_	= 	n;
 	pmut_	=	0.3;
 	//~ igraph_static_power_law_game(graph_, n, edges, LAW_EXPONENT, -1, 0, 0, 1);
-	//igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
+	//~ igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
 	igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, 
 						 /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, 
 						 /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
@@ -27,11 +27,12 @@ Graph::Graph(int n, int edges)
 		VECTOR(*weights_)[i] = 1;
 	}
 	igraph_add_edges(graph_, weights_, 0);
+	igraph_simplify(graph_, 1, 1, 0);
 	//initialize layout matrix
 	igraph_matrix_init(&coords_,Nnodes_,2);
 }
 
-Graph::Graph(Graph* parent1, Graph* parent2, int crosspt)
+Graph::Graph(Graph* parent1, Graph* parent2, unsigned int crosspt)
 {
 	graph_ 	= 	new igraph_t;
 	Nnodes_	= 	parent1->Nnodes_;
@@ -41,33 +42,50 @@ Graph::Graph(Graph* parent1, Graph* parent2, int crosspt)
 	igraph_t	temp2;
 	igraph_copy(&temp1, parent1->graph_);
 	igraph_copy(&temp2, parent2->graph_);
-	for (unsigned int k = crosspt; k<Nnodes_-1; k++){
-		igraph_es_t	edges;
-		igraph_es_incident(&edges, k, IGRAPH_ALL);
+	
+	igraph_vit_t	Vset;
+	igraph_vit_create(&temp2, igraph_vss_seq(crosspt, Nnodes_-1), &Vset);
+	while (!IGRAPH_VIT_END(Vset))
+	{
+		igraph_es_t			edges;
+		igraph_es_incident(&edges, IGRAPH_VIT_GET(Vset), IGRAPH_ALL);
 		igraph_delete_edges(&temp1, edges);
 		igraph_es_destroy(&edges);
+		IGRAPH_VIT_NEXT(Vset);
 	}
-	for (igraph_integer_t k = 0; k<crosspt-1; k++){
-		igraph_es_t		edges;
-		igraph_eit_t	iterator;
+	igraph_vit_destroy(&Vset);
+	igraph_vit_create(&temp2, igraph_vss_seq(0, crosspt-1), &Vset);
+	while (!IGRAPH_VIT_END(Vset))
+	{
+		igraph_vector_t		to_delete;
+		igraph_es_t			edges;
+		igraph_eit_t		iterator;
+		igraph_integer_t	a, from, to;
 		
-		igraph_es_incident(&edges, k, IGRAPH_ALL);
-		printf("%d, ok ?\n",k);
-		igraph_eit_create(graph_, edges, &iterator);
-		IGRAPH_EIT_RESET(iterator);
-		printf("go\n");
-		while (!IGRAPH_EIT_END(iterator)) {
+		igraph_vector_init(&to_delete, 0);
+		igraph_es_incident(&edges, IGRAPH_VIT_GET(Vset), IGRAPH_ALL);
+		igraph_eit_create(&temp2, edges, &iterator);
+		while(!IGRAPH_EIT_END(iterator))
+		{
+			a = IGRAPH_EIT_GET(iterator);
+			igraph_edge(&temp2, a, &from, &to);
+			if ((int)from<(int)crosspt and (int)to<(int)crosspt){
+				igraph_vector_push_back(&to_delete, (igraph_real_t) a);
+			}
 			IGRAPH_EIT_NEXT(iterator);
-			
-			igraph_delete_edges(&temp2, igraph_ess_1(IGRAPH_EIT_GET(iterator)));			
 		}
-		printf("hop\n");
+		IGRAPH_VIT_NEXT(Vset);
 		igraph_es_destroy(&edges);
 		igraph_eit_destroy(&iterator);
+		//~ igraph_vector_destroy(&to_delete);
+		igraph_es_t	selector;
+		igraph_es_vector(&selector, &to_delete);
+		igraph_delete_edges(&temp2, selector);
+		igraph_es_destroy(&selector);
 	}
-	igraph_union(graph_, &temp1, &temp2, 0, 0);
+	igraph_vit_destroy(&Vset);
 	
-	//initialize layout matrix
+	igraph_union(graph_, &temp1, &temp2, 0, 0);
 	igraph_matrix_init(&coords_,Nnodes_,2);
 	
 	igraph_destroy(&temp1);
