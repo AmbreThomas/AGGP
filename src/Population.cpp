@@ -81,8 +81,9 @@ void	Population::select_by_tournament(void)
 	
 	printf("\tSelecting graphs by tournament...\n");
 	for (unsigned int i = 0; i<size_; i++){
-		costs[i] = pop_[i]->cost();
+		costs[i] = pop_[i]->getCost();
 	}
+	
 }
 
 void	Population::select_elite(void)
@@ -94,9 +95,9 @@ void	Population::select_elite(void)
 	 
 	vector<double>	costs(size_, 100);
 	
-	printf("\tSelecting th graphs' elite...\n");
+	printf("\tSelecting the graphs' elite...\n");
 	for (unsigned int i = 0; i<size_; i++){
-		costs[i] = pop_[i]->cost();
+		costs[i] = pop_[i]->getCost();
 	}
 }
 
