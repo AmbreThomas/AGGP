@@ -4,6 +4,7 @@ using namespace sf;
 
 void	printTime_str(const struct tm*);
 void	printDiffTime_str(int);
+void	overwatch_window(sf::RenderWindow*);
 
 int		main(int argc, char** argv)
 {
@@ -27,7 +28,7 @@ int		main(int argc, char** argv)
 		Nedges 	= 	atoi(argv[3]);
 		itermax	=	atoi(argv[4]);
 	}
-	Population*	experiment1 = new Population(Ngraphs, Nnodes, Nedges);
+	Population*	experiment1 = new Population(Ngraphs, Nnodes, Nedges, itermax);
 	printf("Creation of %d graphs completed, with %d nodes and %d edges in each.\n", Ngraphs, Nnodes, Nedges);
 	printf("The nodes were built with a power law degree distribution, which power parameter is %f.\n\n", Graph::LAW_EXPONENT);
 	printf("\n");
@@ -36,8 +37,15 @@ int		main(int argc, char** argv)
 			(int)(Nedges/1000000.0*Ngraphs*itermax));
 	
 	//===================== MAIN LOOP ==================================
-	while (iter<itermax)
+	RenderWindow	w(VideoMode(400, 400), "Average Cost Evolution");
+	RenderWindow	v(VideoMode(400, 400), "Min Cost Evolution");
+	while (iter<itermax and w.isOpen() and v.isOpen())
 	{
+		overwatch_window(&v);
+		overwatch_window(&w);
+		experiment1->study(&v, &w, iter, itermax);
+		v.display();
+		w.display();
 		printf("  Iteration %d:\n", ++iter);
 		experiment1->cross(); 					//population size N ==> 2N
 		experiment1->select_by_tournament();	//population size 2N ==> N
@@ -53,28 +61,23 @@ int		main(int argc, char** argv)
 	Graph best_graph = experiment1->getgraph(0);
 	best_graph.compute_layout();
 	RenderWindow window(VideoMode(400, 400), "Best Biological Network");
-	while (window.isOpen())
+	while (window.isOpen() or (w.isOpen() and v.isOpen()))
 	{
-		Event event;
-		while (window.pollEvent(event))
-		{
-			switch (event.type) 
-			{
-				case Event::Closed:
-					window.close();
-					break;
-				case Event::Resized:
-					window.setView(View(FloatRect(0,0, (float)event.size.width, (float)event.size.height)));
-					break;
-				default:
-					break;
-			}
+		if (window.isOpen()){
+			overwatch_window(&window);
+			best_graph.draw(&window);
+			window.display();
 		}
-		window.clear();
-		best_graph.draw(&window);
-		window.display();
+		if (v.isOpen() and w.isOpen()){
+			overwatch_window(&v);
+			overwatch_window(&w);
+			experiment1->study(&v, &w, itermax, itermax);
+			v.display();
+			w.display();
+		}
 	}
 	delete experiment1;
+	
 	return 0;
 }
 
@@ -98,4 +101,24 @@ void	printDiffTime_str(int diff)
 	if (hours) 	printf("%d° ", hours);
 	if (min) 	printf("%d' ", min);
 	printf("%d\"", sec);
+}
+
+void	overwatch_window(sf::RenderWindow* w)
+{
+	Event event;
+	while (w->pollEvent(event))
+	{
+		switch (event.type) 
+		{
+			case Event::Closed:
+				w->close();
+				break;
+			case Event::Resized:
+				w->setView(View(FloatRect(0,0, (float)event.size.width, (float)event.size.height)));
+				break;
+			default:
+				break;
+		}
+	}
+	w->clear();
 }

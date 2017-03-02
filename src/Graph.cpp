@@ -12,11 +12,11 @@ igraph_real_t	Graph::LAW_EXPONENT = 2.5;
 Graph::Graph(int n, int edges)
 {
 	graph_ 	= 	new igraph_t;
-	Nnodes_	= 	n;
+	Nnodes_	= 	n+ edges - edges;
 	pmut_	=	0.3;
 	//~ igraph_static_power_law_game(graph_, n, edges, LAW_EXPONENT, -1, 0, 0, 1);
-	igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
-	//~ igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
+	//~ igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
+	igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
 	igraph_simplify(graph_, 1, 1, 0);
 	igraph_matrix_init(&coords_,Nnodes_,2);
 	cost_	=	this->cost();
@@ -89,7 +89,6 @@ Graph::Graph(Graph* parent1, Graph* parent2, unsigned int crosspt)
 
 Graph::~Graph()
 {
-	//~ igraph_vector_destroy(weights_);
 	igraph_destroy(graph_);
 }
 
@@ -112,12 +111,12 @@ double 	Graph::cost(void)
 	//Evaluate distance to desired clustering coefficient:
 	igraph_vector_init(&clust_coeffs,Nnodes_);
 	igraph_vector_init(&degrees,0);
-	igraph_transitivity_local_undirected(graph_, &clust_coeffs, igraph_vss_all(), IGRAPH_TRANSITIVITY_NAN);
-	//J'AI DES DOUTES SUR LE IGRAPH_TRANSITIVITY_ZERO...
+	igraph_transitivity_local_undirected(graph_, &clust_coeffs, igraph_vss_all(), IGRAPH_TRANSITIVITY_ZERO);
     igraph_degree(graph_, &degrees, igraph_vss_all(), IGRAPH_ALL, 0);
 	cost1 = 0;
 	for (size_t i = 0; i < Nnodes_; i++){
-		cost1 	+=	(double) abs(VECTOR(clust_coeffs)[i] - 1.0/VECTOR(degrees)[i]);
+		if (VECTOR(degrees)[i])
+			cost1 	+=	(double) abs(VECTOR(clust_coeffs)[i] - 1.0/VECTOR(degrees)[i]);
 	}
 	cost1 = cost1/((double) Nnodes_);
 	
@@ -140,7 +139,7 @@ double 	Graph::cost(void)
 	cost3 	= 	((double) abs(d - log((double)Nnodes_)))/(log((double)Nnodes_));
 	
 	cost	=	sqrt(cost1*cost1 + cost2*cost2 + cost3*cost3);
-	//~ printf("cost = ||%f, %f, %f|| = %f\n",cost1, cost2, cost3, cost);
+	if (cost>100.0)	printf("cost = ||%f, %f, %f|| = %f\n",cost1, cost2, cost3, cost);
 	
 	
 	igraph_vector_destroy(&degrees);

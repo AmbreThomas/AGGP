@@ -8,12 +8,14 @@ using namespace std;
 
 //=========================== CONSTRUCTORS =============================
 
-Population::Population(unsigned int n, unsigned int Nnodes, unsigned int Nedges)
+Population::Population(unsigned int n, unsigned int Nnodes, unsigned int Nedges, int itermax)
 {
 	pselect_	=	0.1;
 	for (unsigned int i = 0; i<n; i++){
 		pop_.push_back(new Graph(Nnodes, Nedges));
 	}
+	remember_means_	= vector<double> (itermax, 0);
+	remember_mins_	= vector<double> (itermax, 0);
 	size_ = n;
 }
 
@@ -134,6 +136,45 @@ void	Population::select_elite(void)
 	}
 }
 
+
+void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, int iter, int itermax)
+{
+	vector<double>	costs(pop_.size());
+	
+	for (unsigned int i = 0; i<pop_.size(); i++) {
+		costs[i] = pop_[i]->getCost();
+	}
+	remember_means_[iter] = accumulate( costs.begin(), costs.end(), 0.0)/(float)costs.size();
+	remember_mins_[iter] = *min_element(costs.begin(), costs.end());
+	drawline(0,0,itermax,0,(float)itermax,0.5,v,sf::Color::White);
+	drawline(0,0,0,50,(float)itermax,0.5,v,sf::Color::White);
+	drawline(0,0,itermax,0,(float)itermax,50.0,w,sf::Color::White);
+	drawline(0,0,0,50,(float)itermax,50.0,w,sf::Color::White);
+	for( int i = 0; i < iter-1; i++){
+		drawline(i, remember_means_[i], i+1, remember_means_[i+1], (float)itermax, 50.0, w, sf::Color::Red);
+		drawline(i, remember_mins_[i], i+1, remember_mins_[i+1], (float)itermax, 0.5, v, sf::Color::Green);
+	}
+}
 //========================== PROTECTED METHODS =========================
 
 //============================ FUNCTIONS ===============================
+void	drawline(float x1, float y1, float x2, float y2, float xmax, float ymax, sf::RenderWindow* w, sf::Color col)
+{
+	float	x_factor, y_factor;
+	
+	sf::Vector2f w_size 	=	w->getView().getSize();
+	x_factor				=	(float) (w_size.x-20)/(xmax);
+	y_factor				=	(float) (w_size.y-20)/(ymax);
+
+	x1 =  10 + x1*x_factor;
+	y1 =  (float)w_size.y - (10 + y1*y_factor);
+	x2 =  10 + x2*x_factor;
+	y2 =  (float)w_size.y - (10 + y2*y_factor);
+	sf::Vertex line[] = {
+		sf::Vertex(sf::Vector2f(x1,y1)),
+		sf::Vertex(sf::Vector2f(x2,y2))
+	};
+	line[0].color = col;
+	line[1].color = col;
+	w->draw(line, 2, sf::Lines);
+}
