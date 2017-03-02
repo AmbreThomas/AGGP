@@ -38,9 +38,8 @@ int		main(int argc, char** argv)
 	//===================== MAIN LOOP ==================================
 	while (iter<itermax)
 	{
-		printf("  Iteration %d: pop of size %d\n",
-				++iter, (int)experiment1->getCurrentSize());
-		experiment1->cross(); 				//population size N ==> 2N
+		printf("  Iteration %d:\n", ++iter);
+		experiment1->cross(); 					//population size N ==> 2N
 		experiment1->select_by_tournament();	//population size 2N ==> N
 		//~ experiment1->select_elite();			//population size 2N ==> N
 	}
@@ -94,7 +93,7 @@ void	printDiffTime_str(int diff)
 	int	days	=	(int) diff/86400;
 	int	hours	=	(int) diff/3600;
 	int	min		=	(int) diff/60;
-	int	sec		=	(int) (diff - diff/60);
+	int	sec		=	(int) diff%60;
 	if (days) 	printf("%dd ", days);
 	if (hours) 	printf("%d° ", hours);
 	if (min) 	printf("%d' ", min);

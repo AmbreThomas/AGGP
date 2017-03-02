@@ -112,7 +112,7 @@ double 	Graph::cost(void)
 	//Evaluate distance to desired clustering coefficient:
 	igraph_vector_init(&clust_coeffs,Nnodes_);
 	igraph_vector_init(&degrees,0);
-	igraph_transitivity_local_undirected(graph_, &clust_coeffs, igraph_vss_all(), IGRAPH_TRANSITIVITY_ZERO);
+	igraph_transitivity_local_undirected(graph_, &clust_coeffs, igraph_vss_all(), IGRAPH_TRANSITIVITY_NAN);
 	//J'AI DES DOUTES SUR LE IGRAPH_TRANSITIVITY_ZERO...
     igraph_degree(graph_, &degrees, igraph_vss_all(), IGRAPH_ALL, 0);
 	cost1 = 0;

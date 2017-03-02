@@ -10,7 +10,7 @@ using namespace std;
 
 Population::Population(unsigned int n, unsigned int Nnodes, unsigned int Nedges)
 {
-	pcross_	=	0.1;
+	pselect_	=	0.1;
 	for (unsigned int i = 0; i<n; i++){
 		pop_.push_back(new Graph(Nnodes, Nedges));
 	}
@@ -76,15 +76,48 @@ void	Population::select_by_tournament(void)
 	 * 
 	 * Attention, possibilité de ne jamais sélectionner un très bon graphe,
 	 * qui finit par être supprimé ! */
-	 
-	vector<double>	costs(size_, 100);
+	
+	size_t					currentSize		=	pop_.size();
+	vector<unsigned int>	tokeep(currentSize,0);
 	
 	printf("\tSelecting graphs by tournament...\n");
-	for (unsigned int i = 0; i<size_; i++){
-		costs[i] = pop_[i]->getCost();
+	for (size_t i = 0; i<size_; i++)
+	{
+		unsigned int			a,b,p;
+		
+		a	=	rand()%currentSize;
+		while (tokeep[a]) a	=	rand()%currentSize;
+		b	=	a;
+		while (a==b or tokeep[b]) b	=	rand()%currentSize;
+		p	=	((double)rand())/RAND_MAX;
+		if (p < pselect_)
+		{
+			/* Garder le pire des deux */
+			if (pop_[a]->getCost() >= pop_[b]->getCost()){
+				tokeep[a] = 1;
+			} else {
+				tokeep[b] = 1;
+			}
+		} else {
+			/* Garder le meilleur des deux */
+			if (pop_[a]->getCost() >= pop_[b]->getCost()){
+				tokeep[b] = 1;
+			} else {
+				tokeep[a] = 1;
+			}
+		}
 	}
-	
+	for (int i = currentSize-1; i >= 0; i--)
+	{
+		if (!tokeep[i])
+		{
+			delete pop_[i];
+			pop_.erase(pop_.begin()+i);
+		}
+	}
 }
+
+
 
 void	Population::select_elite(void)
 {
