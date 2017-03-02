@@ -17,17 +17,17 @@ int		main(int argc, char** argv)
     //===================== POPULATION GENERATION ======================
     if (argc<5){
 		printf("./gengraph Ngraphs Nnodes Nedges Niter\n\nusing default parameters...\n\n");
-		Ngraphs	= 	1000;
-		Nnodes	= 	1000;
-		Nedges 	= 	3000;
-		itermax	=	100;
+		Ngraphs	= 	100;
+		Nnodes	= 	100;
+		Nedges 	= 	300;
+		itermax	=	10;
 	} else {
 		Ngraphs	= 	atoi(argv[1]);
 		Nnodes	= 	atoi(argv[2]);
 		Nedges 	= 	atoi(argv[3]);
 		itermax	=	atoi(argv[4]);
 	}
-	Population	experiment1 = Population(Ngraphs, Nnodes, Nedges);
+	Population*	experiment1 = new Population(Ngraphs, Nnodes, Nedges);
 	printf("Creation of %d graphs completed, with %d nodes and %d edges in each.\n", Ngraphs, Nnodes, Nedges);
 	printf("The nodes were built with a power law degree distribution, which power parameter is %f.\n\n", Graph::LAW_EXPONENT);
 	printf("\n");
@@ -38,11 +38,10 @@ int		main(int argc, char** argv)
 	//===================== MAIN LOOP ==================================
 	while (iter<itermax)
 	{
-		printf("  Iteration %d: pop of size %d\n",
-				++iter, (int)experiment1.getCurrentSize());
-		//experiment1.cross(); 				//population size N ==> 2N
-		//experiment1.select_by_tournament();	//population size 2N ==> N
-		//~ experiment1.select_elite();			//population size 2N ==> N
+		printf("  Iteration %d:\n", ++iter);
+		experiment1->cross(); 					//population size N ==> 2N
+		experiment1->select_by_tournament();	//population size 2N ==> N
+		//~ experiment1->select_elite();			//population size 2N ==> N
 	}
 	
 	endTime	=	time(NULL);
@@ -51,7 +50,7 @@ int		main(int argc, char** argv)
 	printf(", displaying best solution...\n");
 	
 	//===================== DISPLAY RESULTS ============================
-	Graph best_graph = experiment1.getgraph(0);
+	Graph best_graph = experiment1->getgraph(0);
 	best_graph.compute_layout();
 	RenderWindow window(VideoMode(400, 400), "Best Biological Network");
 	while (window.isOpen())
@@ -75,7 +74,7 @@ int		main(int argc, char** argv)
 		best_graph.draw(&window);
 		window.display();
 	}
-
+	delete experiment1;
 	return 0;
 }
 
@@ -94,7 +93,7 @@ void	printDiffTime_str(int diff)
 	int	days	=	(int) diff/86400;
 	int	hours	=	(int) diff/3600;
 	int	min		=	(int) diff/60;
-	int	sec		=	(int) (diff - diff/60);
+	int	sec		=	(int) diff%60;
 	if (days) 	printf("%dd ", days);
 	if (hours) 	printf("%d° ", hours);
 	if (min) 	printf("%d' ", min);

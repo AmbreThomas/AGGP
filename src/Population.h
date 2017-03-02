@@ -13,23 +13,23 @@ class Population
 		//================== DESTRUCTORS ===============================
 		~Population(void);
 		//==================== GETTERS =================================
-		size_t	size(void);
-		Graph	getgraph(int);
-		size_t	getCurrentSize(void);
+		size_t				size(void);
+		Graph				getgraph(int);
+		size_t				getCurrentSize(void);
 		//===================== SETTERS ================================
 		
 		//====================== OPERATORS =============================
 		
 		//==================== PUBLIC METHODS ==========================
-		void	cross(void);
-		void	select_by_tournament(void);
-		void	select_elite(void);
+		void				cross(void);
+		void				select_by_tournament(void);
+		void				select_elite(void);
 	protected:
 		//==================== PROTECTED METHODS =======================
 		
 		//======================= ATTRIBUTES ===========================
 		std::vector<Graph*>	pop_;
-		double				pcross_;
+		double				pselect_;
 		size_t				size_;
 };
 
