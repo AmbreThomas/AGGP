@@ -61,7 +61,6 @@ void	Population::cross(void)
 		pop_.push_back(child1);
 		pop_.push_back(child2);
 	}
-	//Attention ici le même graphe peut être tiré deux fois.
 }
 
 

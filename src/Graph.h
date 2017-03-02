@@ -40,7 +40,7 @@ class Graph
 		//======================= ATTRIBUTES ===========================
 		igraph_matrix_t			coords_;
 		igraph_t*				graph_;
-		igraph_vector_t*		weights_;
+		//~ igraph_vector_t*		weights_;
 		size_t		 			Nnodes_;
 		double					pmut_;
 };

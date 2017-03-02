@@ -16,53 +16,54 @@ Graph::Graph(int n, int edges)
 	Nnodes_	= 	n;
 	pmut_	=	0.3;
 	//~ igraph_static_power_law_game(graph_, n, edges, LAW_EXPONENT, -1, 0, 0, 1);
-	//~ igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
-	igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, 
-						 /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, 
-						 /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
+	igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
+	//~ igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
 	//Create the weights on edges, all fixed to 1:
-	weights_ = new igraph_vector_t;
-	igraph_vector_init(weights_, edges);
-	for (int i=0; i<igraph_vector_size(weights_); i++ ){
-		VECTOR(*weights_)[i] = 1;
-	}
-	igraph_add_edges(graph_, weights_, 0);
+	
+	//~ weights_ = new igraph_vector_t;
+	//~ igraph_vector_init(weights_, edges);
+	//~ for (int i=0; i<igraph_vector_size(weights_); i++ ){
+		//~ VECTOR(*weights_)[i] = 1;
+	//~ }
+	//~ igraph_add_edges(graph_, weights_, 0);
+	
 	igraph_simplify(graph_, 1, 1, 0);
-	//initialize layout matrix
 	igraph_matrix_init(&coords_,Nnodes_,2);
 }
 
 Graph::Graph(Graph* parent1, Graph* parent2, unsigned int crosspt)
 {
-	graph_ 	= 	new igraph_t;
-	Nnodes_	= 	parent1->Nnodes_;
-	pmut_	=	0.3;
-	
-	igraph_t	temp1;
-	igraph_t	temp2;
+	igraph_vit_t		Vset;
+	igraph_vector_t		to_delete;
+	graph_ 	= 			new igraph_t;
+	Nnodes_	= 			parent1->Nnodes_;
+	pmut_	=			0.3;
+
+	igraph_t			temp1;
+	igraph_t			temp2;
 	igraph_copy(&temp1, parent1->graph_);
 	igraph_copy(&temp2, parent2->graph_);
 	
-	igraph_vit_t	Vset;
-	igraph_vit_create(&temp2, igraph_vss_seq(crosspt, Nnodes_-1), &Vset);
+	//suppression d'edges de temp1
+	igraph_vit_create(&temp1, igraph_vss_seq(crosspt, Nnodes_-1), &Vset);
 	while (!IGRAPH_VIT_END(Vset))
 	{
-		igraph_es_t			edges;
+		igraph_es_t		edges;
 		igraph_es_incident(&edges, IGRAPH_VIT_GET(Vset), IGRAPH_ALL);
 		igraph_delete_edges(&temp1, edges);
 		igraph_es_destroy(&edges);
 		IGRAPH_VIT_NEXT(Vset);
 	}
 	igraph_vit_destroy(&Vset);
+	//suppression d'edges de temp2
 	igraph_vit_create(&temp2, igraph_vss_seq(0, crosspt-1), &Vset);
+	igraph_vector_init(&to_delete, 0);
 	while (!IGRAPH_VIT_END(Vset))
 	{
-		igraph_vector_t		to_delete;
-		igraph_es_t			edges;
-		igraph_eit_t		iterator;
-		igraph_integer_t	a, from, to;
+		igraph_es_t		edges;
+		igraph_eit_t	iterator;
+		igraph_integer_t a, from, to;
 		
-		igraph_vector_init(&to_delete, 0);
 		igraph_es_incident(&edges, IGRAPH_VIT_GET(Vset), IGRAPH_ALL);
 		igraph_eit_create(&temp2, edges, &iterator);
 		while(!IGRAPH_EIT_END(iterator))
@@ -77,19 +78,29 @@ Graph::Graph(Graph* parent1, Graph* parent2, unsigned int crosspt)
 		IGRAPH_VIT_NEXT(Vset);
 		igraph_es_destroy(&edges);
 		igraph_eit_destroy(&iterator);
-		//~ igraph_vector_destroy(&to_delete);
-		igraph_es_t	selector;
-		igraph_es_vector(&selector, &to_delete);
-		igraph_delete_edges(&temp2, selector);
-		igraph_es_destroy(&selector);
 	}
-	igraph_vit_destroy(&Vset);
+	igraph_es_t			selector;
+	igraph_es_vector(&selector, &to_delete);
+	igraph_delete_edges(&temp2, selector);
+	igraph_es_destroy(&selector);
 	
 	igraph_union(graph_, &temp1, &temp2, 0, 0);
-	igraph_matrix_init(&coords_,Nnodes_,2);
 	
 	igraph_destroy(&temp1);
 	igraph_destroy(&temp2);
+	igraph_vit_destroy(&Vset);
+	igraph_vector_destroy(&to_delete);
+	
+	
+	//~ weights_ = new igraph_vector_t;
+	//~ igraph_vector_init(weights_, edges);
+	//~ for (int i=0; i<igraph_vector_size(weights_); i++ ){
+		//~ VECTOR(*weights_)[i] = 1;
+	//~ }
+	//~ igraph_add_edges(graph_, weights_, 0);
+	
+	//~ igraph_simplify(graph_, 1, 1, 0);
+	igraph_matrix_init(&coords_,Nnodes_,2);
 }
 
 
@@ -97,7 +108,7 @@ Graph::Graph(Graph* parent1, Graph* parent2, unsigned int crosspt)
 
 Graph::~Graph()
 {
-	igraph_vector_destroy(weights_);
+	//~ igraph_vector_destroy(weights_);
 	igraph_destroy(graph_);
 }
 
