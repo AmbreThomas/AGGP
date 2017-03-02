@@ -58,14 +58,14 @@ int		main(int argc, char** argv)
 	printf(", displaying best solution...\n");
 	
 	//===================== DISPLAY RESULTS ============================
-	Graph best_graph = experiment1->getgraph(0);
-	best_graph.compute_layout();
+	Graph* best_graph = experiment1->getgraph(0);
+	best_graph->compute_layout();
 	RenderWindow window(VideoMode(400, 400), "Best Biological Network");
 	while (window.isOpen() or (w.isOpen() and v.isOpen()))
 	{
 		if (window.isOpen()){
 			overwatch_window(&window);
-			best_graph.draw(&window);
+			best_graph->draw(&window);
 			window.display();
 		}
 		if (v.isOpen() and w.isOpen()){
@@ -76,6 +76,9 @@ int		main(int argc, char** argv)
 			w.display();
 		}
 	}
+	if (v.isOpen()) v.close();
+	if (w.isOpen()) w.close();
+	if (window.isOpen()) window.close();
 	delete experiment1;
 	
 	return 0;

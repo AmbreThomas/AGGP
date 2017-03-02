@@ -33,7 +33,7 @@ Population::~Population(void)
 
 size_t	Population::size(void) { return (size_); }
 
-Graph 	Population::getgraph(int i) { return (*pop_[i]); }
+Graph* 	Population::getgraph(int i) { return (pop_[i]); }
 
 size_t 	Population::getCurrentSize(void) { return (pop_.size()); }
 
