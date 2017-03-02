@@ -40,8 +40,8 @@ int		main(int argc, char** argv)
 	{
 		printf("  Iteration %d: pop of size %d\n",
 				++iter, (int)experiment1.getCurrentSize());
-		experiment1.cross(); 				//population size N ==> 2N
-		experiment1.select_by_tournament();	//population size 2N ==> N
+		//experiment1.cross(); 				//population size N ==> 2N
+		//experiment1.select_by_tournament();	//population size 2N ==> N
 		//~ experiment1.select_elite();			//population size 2N ==> N
 	}
 	

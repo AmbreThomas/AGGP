@@ -81,6 +81,7 @@ Graph::~Graph()
 {
 	igraph_vector_destroy(weights_);
 	igraph_destroy(graph_);
+	igraph_matrix_destroy(&coords_);
 }
 
 
@@ -161,16 +162,46 @@ void	Graph::draw(sf::RenderWindow* w)
 	float x_base=(float)w_size.x*(float)(0.05/1.1);
 	float y_factor=(float)w_size.y/(float)1.1/(float)(max_y-min_y);
 	float y_base=(float)w_size.y*(float)(0.05/1.1);
-	sf::CircleShape node_shape;
-	node_shape.setRadius(min(x_factor,y_factor)/4);
-	node_shape.setFillColor(sf::Color::Green);
-	float x;
-	float y;
+	float radius=min(x_factor,y_factor)*4;
+	float screen_x[Nnodes_];
+	float screen_y[Nnodes_];
 	for (size_t n=0; n<Nnodes_; n++)
 	{
-		x=x_base+(float)(igraph_vector_e(&pos_x,n)-min_x)*x_factor;
-		y=y_base+(float)(igraph_vector_e(&pos_y,n)-min_y)*y_factor;
-		node_shape.setPosition(x,y);
+		screen_x[n]=x_base+(float)(igraph_vector_e(&pos_x,n)-min_x)*x_factor;
+		screen_y[n]=y_base+(float)(igraph_vector_e(&pos_y,n)-min_y)*y_factor;
+	}
+	igraph_vector_destroy(&pos_x);
+	igraph_vector_destroy(&pos_y);
+	igraph_es_t es=igraph_ess_all(IGRAPH_EDGEORDER_ID);
+	igraph_eit_t eit;
+	igraph_eit_create(graph_,es,&eit);
+	IGRAPH_EIT_RESET(eit);
+	sf::Vertex edge[2];
+	igraph_integer_t eid;
+	igraph_integer_t from;
+	igraph_integer_t to;
+	bool stop(false);
+	do
+	{
+		eid=IGRAPH_EIT_GET(eit);
+		igraph_edge(graph_,eid,&from,&to);
+		edge[0]=sf::Vertex(sf::Vector2f(screen_x[from]+radius,screen_y[from]+radius));
+		edge[1]=sf::Vertex(sf::Vector2f(screen_x[to]+radius,screen_y[to]+radius));
+		w->draw(edge,2,sf::Lines);
+		stop=IGRAPH_EIT_END(eit);
+		if (!stop)
+		{
+			IGRAPH_EIT_NEXT(eit);
+		}
+	}
+	while (!stop);
+	igraph_eit_destroy(&eit);
+	sf::CircleShape node_shape;
+	node_shape.setRadius(radius);
+	node_shape.setFillColor(sf::Color::Green);
+	for (size_t n=0; n<Nnodes_; n++)
+	{
+		node_shape.setPosition(screen_x[n],screen_y[n]);
 		w->draw(node_shape);
 	}
 }
