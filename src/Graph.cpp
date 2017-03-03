@@ -15,8 +15,8 @@ Graph::Graph(int n, int edges)
 	Nnodes_	= 	n+ edges - edges;
 	pmut_	=	0.3;
 	//~ igraph_static_power_law_game(graph_, n, edges, LAW_EXPONENT, -1, 0, 0, 1);
-	igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
-	//~ igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
+	//~ igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
+	igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
 	igraph_simplify(graph_, 1, 1, 0);
 	cost_	=	this->cost();
 }
@@ -138,7 +138,7 @@ double 	Graph::cost(void)
 	cost3 	= 	((double) abs(d - log((double)Nnodes_)))/(log((double)Nnodes_));
 	
 	cost	=	sqrt(cost1*cost1 + cost2*cost2 + cost3*cost3);
-	if (cost>100.0)	printf("cost = ||%f, %f, %f|| = %f\n",cost1, cost2, cost3, cost);
+	//~ printf("cost = ||%f, %f, %f|| = %f\n",cost1, cost2, cost3, cost);
 	
 	
 	igraph_vector_destroy(&degrees);
@@ -257,8 +257,26 @@ void	Graph::mutate(void)
 
 size_t	Graph::getN(void) { return (Nnodes_); }
 
-double	Graph::getCost(void) { return (cost_); }
+double	Graph::getCost(void) {	return (cost_); }
 
+bool	Graph::IsConnected(void)
+{
+	igraph_vector_ptr_t 	complist;
+	igraph_vector_ptr_init(&complist, 0);
+	igraph_decompose(graph_, &complist, IGRAPH_WEAK, -1, 1);
+	int	a	=	(int)igraph_vector_ptr_size(&complist);
+	printf("%d composantes détectées, degrés: ", a);
+	igraph_vector_t		degrees;
+	igraph_vector_init(&degrees, 0);
+	igraph_degree(graph_, &degrees, igraph_vss_all(), IGRAPH_ALL, 1);
+	for (unsigned int i = 0; i<Nnodes_; i++)
+	{
+		printf("%d ",(int)VECTOR(degrees)[i]);
+	}
+	igraph_vector_destroy(&degrees);
+	igraph_decompose_destroy(&complist);
+	return (a==1);
+}
 //========================== PROTECTED METHODS =========================
 
 //============================ FUNCTIONS ===============================

@@ -10,7 +10,7 @@ using namespace std;
 
 Population::Population(unsigned int n, unsigned int Nnodes, unsigned int Nedges, int itermax)
 {
-	pselect_	=	0.1;
+	pselect_	=	0.02;
 	for (unsigned int i = 0; i<n; i++){
 		pop_.push_back(new Graph(Nnodes, Nedges));
 	}
@@ -64,8 +64,6 @@ void	Population::cross(void)
 		pop_.push_back(child2);
 	}
 }
-
-
 
 void	Population::select_by_tournament(void)
 {
@@ -144,7 +142,7 @@ Graph*	Population::getbestgraph(void)
 	for (unsigned int i = 0; i<size_; i++){
 		costs[i] = pop_[i]->getCost();
 	}
-	return pop_[(min_element(costs.begin(), costs.end()) - costs.begin())];
+	return pop_[distance(costs.begin(), min_element(costs.begin(), costs.end()))];
 }
 
 
@@ -152,13 +150,25 @@ void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, int iter, int i
 {
 	vector<double>	costs(pop_.size());
 	
-	for (unsigned int i = 0; i<pop_.size(); i++) {
+	for (unsigned int i=0; i<pop_.size(); i++)
+	{
 		costs[i] = pop_[i]->getCost();
+		if (iter<itermax)
+		{
+			printf("\tGraph %d (cost %f): ",i+1, costs[i]);
+			if (pop_[i]->IsConnected())
+			{
+				printf("OK\n");
+			} else {
+				printf("\n");
+			}
+		}
 	}
 	double	minmax = *max_element(remember_mins_.begin(), remember_mins_.end());
 	double	meanmax = *max_element(remember_means_.begin(), remember_means_.end());
 	remember_means_[iter] = accumulate( costs.begin(), costs.end(), 0.0)/(float)costs.size();
 	remember_mins_[iter] = *min_element(costs.begin(), costs.end());
+	if (iter<itermax) printf("\tThe best graph is graph %d.\n", 1+(int)distance(costs.begin(), min_element(costs.begin(), costs.end())));
 	drawline(0,0,itermax,0,(float)itermax,minmax,v,sf::Color::White);
 	drawline(0,0,0,50,(float)itermax,minmax,v,sf::Color::White);
 	drawline(0,0,itermax,0,(float)itermax,meanmax,w,sf::Color::White);

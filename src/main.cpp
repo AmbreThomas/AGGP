@@ -1,6 +1,9 @@
 #include "Population.h"
+#include <cstring>
+#include <iostream>
 
 using namespace sf;
+using namespace std;
 
 void	printTime_str(const struct tm*);
 void	printDiffTime_str(int);
@@ -37,13 +40,18 @@ int		main(int argc, char** argv)
 			(int)(Nedges/1000000.0*Ngraphs*itermax));
 	
 	//===================== MAIN LOOP ==================================
-	igraph_matrix_t			coords_;
+	igraph_matrix_t		coords_;
+	string				asked_graph = "1";
 	RenderWindow 	window(VideoMode(400, 400), "Best Biological Network");
 	RenderWindow	w(VideoMode(400, 400), "Average VS Min Cost Evolution");
 	RenderWindow	v(VideoMode(400, 400), "Min Cost Evolution");
 	while (iter<itermax and w.isOpen() and v.isOpen() and window.isOpen())
 	{
-		Graph* best_graph = experiment1->getbestgraph();
+		printf("\tAsk for a graph: ");
+		getline(cin, asked_graph);
+		printf("\n");
+		Graph* best_graph = experiment1->getgraph(atoi(asked_graph.c_str()) - 1);
+		//~ Graph* best_graph = experiment1->getbestgraph();
 		best_graph->compute_layout(&coords_);
 		overwatch_window(&window);
 		overwatch_window(&v);
@@ -53,7 +61,8 @@ int		main(int argc, char** argv)
 		window.display();
 		v.display();
 		w.display();
-		printf("  Iteration %d:\n", ++iter);
+		
+		printf("\n  Iteration %d:\n", ++iter);
 		experiment1->cross(); 					//population size N ==> 2N
 		experiment1->select_by_tournament();	//population size 2N ==> N
 		//~ experiment1->select_elite();			//population size 2N ==> N
