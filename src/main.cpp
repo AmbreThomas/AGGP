@@ -21,7 +21,7 @@ int		main(int argc, char** argv)
 		Ngraphs	= 	100;
 		Nnodes	= 	100;
 		Nedges 	= 	300;
-		itermax	=	10;
+		itermax	=	1;
 	} else {
 		Ngraphs	= 	atoi(argv[1]);
 		Nnodes	= 	atoi(argv[2]);
@@ -39,7 +39,7 @@ int		main(int argc, char** argv)
 	//===================== MAIN LOOP ==================================
 	RenderWindow	w(VideoMode(400, 400), "Average Cost Evolution");
 	RenderWindow	v(VideoMode(400, 400), "Min Cost Evolution");
-	while (false)//iter<itermax and w.isOpen() and v.isOpen())
+	while (iter<itermax and w.isOpen() and v.isOpen())
 	{
 		overwatch_window(&v);
 		overwatch_window(&w);
@@ -58,14 +58,15 @@ int		main(int argc, char** argv)
 	printf(", displaying best solution...\n");
 	
 	//===================== DISPLAY RESULTS ============================
+	igraph_matrix_t			coords_;
 	Graph* best_graph = experiment1->getgraph(0);
-	best_graph->compute_layout();
+	best_graph->compute_layout(&coords_);
 	RenderWindow window(VideoMode(400, 400), "Best Biological Network");
 	while (window.isOpen() or (w.isOpen() and v.isOpen()))
 	{
 		if (window.isOpen()){
 			overwatch_window(&window);
-			best_graph->draw(&window);
+			best_graph->draw(&window, &coords_);
 			window.display();
 		}
 		if (v.isOpen() and w.isOpen()){
@@ -79,6 +80,7 @@ int		main(int argc, char** argv)
 	if (v.isOpen()) v.close();
 	if (w.isOpen()) w.close();
 	if (window.isOpen()) window.close();
+	igraph_matrix_destroy(&coords_);
 	delete experiment1;
 	
 	return 0;

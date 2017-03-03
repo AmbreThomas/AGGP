@@ -30,8 +30,8 @@ class Graph
 		//==================== PUBLIC METHODS ==========================
 		float					average_path_length(void);
 		double					cost(void);
-		void					compute_layout(void);
-		void 					draw(sf::RenderWindow* w);
+		void					compute_layout(igraph_matrix_t*);
+		void 					draw(sf::RenderWindow* w, igraph_matrix_t*);
 		void 					mutate(void);
 		//==================== PUBLIC ATTRIBUTES =======================
 		static igraph_real_t	LAW_EXPONENT;
@@ -39,7 +39,6 @@ class Graph
 		//==================== PROTECTED METHODS =======================
 		
 		//======================= ATTRIBUTES ===========================
-		igraph_matrix_t			coords_;
 		igraph_t*				graph_;
 		size_t		 			Nnodes_;
 		double					pmut_;
