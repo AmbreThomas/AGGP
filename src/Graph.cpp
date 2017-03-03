@@ -15,8 +15,8 @@ Graph::Graph(int n, int edges)
 	Nnodes_	= 	n+ edges - edges;
 	pmut_	=	0.3;
 	//~ igraph_static_power_law_game(graph_, n, edges, LAW_EXPONENT, -1, 0, 0, 1);
-	//igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
-	igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
+	igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
+	//~ igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
 	igraph_simplify(graph_, 1, 1, 0);
 	cost_	=	this->cost();
 }
@@ -73,7 +73,9 @@ Graph::Graph(Graph* parent1, Graph* parent2, unsigned int crosspt)
 	igraph_es_destroy(&selector);
 	
 	igraph_union(graph_, &temp1, &temp2, 0, 0);
+	igraph_simplify(graph_,1,1,0);
 	cost_	=	this->cost();
+	
 	
 	igraph_destroy(&temp1);
 	igraph_destroy(&temp2);
@@ -168,7 +170,8 @@ void	Graph::draw(sf::RenderWindow* w, igraph_matrix_t* coords_)
 	float x_base=(float)w_size.x*(float)(0.05/1.1);
 	float y_factor=(float)w_size.y/(float)1.1/(float)(max_y-min_y);
 	float y_base=(float)w_size.y*(float)(0.05/1.1);
-	float radius=min(x_factor,y_factor)*1;
+	//~ float radius=min(x_factor,y_factor)*1;
+	float radius = 4;
 	float screen_x[Nnodes_];
 	float screen_y[Nnodes_];
 	for (size_t n=0; n<Nnodes_; n++)

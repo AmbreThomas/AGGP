@@ -16,7 +16,7 @@ Population::Population(unsigned int n, unsigned int Nnodes, unsigned int Nedges,
 	}
 	remember_means_	= vector<double> (itermax, 0);
 	remember_mins_	= vector<double> (itermax, 0);
-	size_ = n;
+	size_ 	=	n;
 }
 
 //=========================== DESTRUCTORS ==============================
@@ -137,6 +137,17 @@ void	Population::select_elite(void)
 }
 
 
+Graph*	Population::getbestgraph(void)
+{
+	vector<double>	costs(size_, 100);
+	
+	for (unsigned int i = 0; i<size_; i++){
+		costs[i] = pop_[i]->getCost();
+	}
+	return pop_[(min_element(costs.begin(), costs.end()) - costs.begin())];
+}
+
+
 void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, int iter, int itermax)
 {
 	vector<double>	costs(pop_.size());
@@ -144,15 +155,18 @@ void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, int iter, int i
 	for (unsigned int i = 0; i<pop_.size(); i++) {
 		costs[i] = pop_[i]->getCost();
 	}
+	double	minmax = *max_element(remember_mins_.begin(), remember_mins_.end());
+	double	meanmax = *max_element(remember_means_.begin(), remember_means_.end());
 	remember_means_[iter] = accumulate( costs.begin(), costs.end(), 0.0)/(float)costs.size();
 	remember_mins_[iter] = *min_element(costs.begin(), costs.end());
-	drawline(0,0,itermax,0,(float)itermax,0.5,v,sf::Color::White);
-	drawline(0,0,0,50,(float)itermax,0.5,v,sf::Color::White);
-	drawline(0,0,itermax,0,(float)itermax,50.0,w,sf::Color::White);
-	drawline(0,0,0,50,(float)itermax,50.0,w,sf::Color::White);
+	drawline(0,0,itermax,0,(float)itermax,minmax,v,sf::Color::White);
+	drawline(0,0,0,50,(float)itermax,minmax,v,sf::Color::White);
+	drawline(0,0,itermax,0,(float)itermax,meanmax,w,sf::Color::White);
+	drawline(0,0,0,50,(float)itermax,meanmax,w,sf::Color::White);
 	for( int i = 0; i < iter-1; i++){
-		drawline(i, remember_means_[i], i+1, remember_means_[i+1], (float)itermax, 50.0, w, sf::Color::Red);
-		drawline(i, remember_mins_[i], i+1, remember_mins_[i+1], (float)itermax, 0.5, v, sf::Color::Green);
+		drawline(i, remember_means_[i], i+1, remember_means_[i+1], (float)itermax, meanmax, w, sf::Color::Red);
+		drawline(i, remember_mins_[i], i+1, remember_mins_[i+1], (float)itermax, meanmax, w, sf::Color::Green);
+		drawline(i, remember_mins_[i], i+1, remember_mins_[i+1], (float)itermax, minmax, v, sf::Color::Green);
 	}
 }
 //========================== PROTECTED METHODS =========================

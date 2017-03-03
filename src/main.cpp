@@ -21,7 +21,7 @@ int		main(int argc, char** argv)
 		Ngraphs	= 	100;
 		Nnodes	= 	100;
 		Nedges 	= 	300;
-		itermax	=	1;
+		itermax	=	10;
 	} else {
 		Ngraphs	= 	atoi(argv[1]);
 		Nnodes	= 	atoi(argv[2]);
@@ -37,13 +37,20 @@ int		main(int argc, char** argv)
 			(int)(Nedges/1000000.0*Ngraphs*itermax));
 	
 	//===================== MAIN LOOP ==================================
-	RenderWindow	w(VideoMode(400, 400), "Average Cost Evolution");
+	igraph_matrix_t			coords_;
+	RenderWindow 	window(VideoMode(400, 400), "Best Biological Network");
+	RenderWindow	w(VideoMode(400, 400), "Average VS Min Cost Evolution");
 	RenderWindow	v(VideoMode(400, 400), "Min Cost Evolution");
-	while (iter<itermax and w.isOpen() and v.isOpen())
+	while (iter<itermax and w.isOpen() and v.isOpen() and window.isOpen())
 	{
+		Graph* best_graph = experiment1->getbestgraph();
+		best_graph->compute_layout(&coords_);
+		overwatch_window(&window);
 		overwatch_window(&v);
 		overwatch_window(&w);
+		best_graph->draw(&window, &coords_);
 		experiment1->study(&v, &w, iter, itermax);
+		window.display();
 		v.display();
 		w.display();
 		printf("  Iteration %d:\n", ++iter);
@@ -51,17 +58,14 @@ int		main(int argc, char** argv)
 		experiment1->select_by_tournament();	//population size 2N ==> N
 		//~ experiment1->select_elite();			//population size 2N ==> N
 	}
-	
 	endTime	=	time(NULL);
 	printf("\nComputed in ");
 	printDiffTime_str((int) difftime(endTime, startTime));
-	printf(", displaying best solution...\n");
+	printf(".\n");
 	
 	//===================== DISPLAY RESULTS ============================
-	igraph_matrix_t			coords_;
-	Graph* best_graph = experiment1->getgraph(0);
+	Graph* best_graph = experiment1->getbestgraph();
 	best_graph->compute_layout(&coords_);
-	RenderWindow window(VideoMode(400, 400), "Best Biological Network");
 	while (window.isOpen() or (w.isOpen() and v.isOpen()))
 	{
 		if (window.isOpen()){

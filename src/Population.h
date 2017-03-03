@@ -17,6 +17,7 @@ class Population
 		//==================== GETTERS =================================
 		size_t				size(void);
 		Graph*				getgraph(int);
+		Graph*				getbestgraph(void);
 		size_t				getCurrentSize(void);
 		//===================== SETTERS ================================
 		
