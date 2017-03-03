@@ -39,7 +39,7 @@ int		main(int argc, char** argv)
 	//===================== MAIN LOOP ==================================
 	RenderWindow	w(VideoMode(400, 400), "Average Cost Evolution");
 	RenderWindow	v(VideoMode(400, 400), "Min Cost Evolution");
-	while (iter<itermax and w.isOpen() and v.isOpen())
+	while (false)//iter<itermax and w.isOpen() and v.isOpen())
 	{
 		overwatch_window(&v);
 		overwatch_window(&w);

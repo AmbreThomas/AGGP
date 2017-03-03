@@ -15,8 +15,8 @@ Graph::Graph(int n, int edges)
 	Nnodes_	= 	n+ edges - edges;
 	pmut_	=	0.3;
 	//~ igraph_static_power_law_game(graph_, n, edges, LAW_EXPONENT, -1, 0, 0, 1);
-	igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
-	//~ igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
+	//igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
+	igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
 	igraph_simplify(graph_, 1, 1, 0);
 	igraph_matrix_init(&coords_,Nnodes_,2);
 	cost_	=	this->cost();
@@ -205,11 +205,29 @@ void	Graph::draw(sf::RenderWindow* w)
 	}
 	while (!stop);
 	igraph_eit_destroy(&eit);
-	sf::CircleShape node_shape;
-	node_shape.setRadius(radius);
-	node_shape.setFillColor(sf::Color::Green);
+	igraph_vs_t vs=igraph_vss_all();
+	igraph_vector_t degree;
+	igraph_vector_init(&degree,Nnodes_);
+	igraph_degree(graph_,&degree,vs,IGRAPH_ALL,false);
+	igraph_real_t c_factor=255/igraph_vector_max(&degree);
+	sf::Color color[Nnodes_];
+	sf::Uint8 r;
+	sf::Uint8 b;
 	for (size_t n=0; n<Nnodes_; n++)
 	{
+		r=(sf::Uint8)(igraph_vector_e(&degree,n)*c_factor);
+		b=(sf::Uint8)(255-igraph_vector_e(&degree,n)*c_factor);
+		color[n]=sf::Color(r,0,b);
+	}
+	igraph_vector_destroy(&degree);
+	//igraph_vit_t vit;
+	//igraph_vit_create(graph_,vs,&vit);
+	//igraph_vit_destroy(&vit);
+	sf::CircleShape node_shape;
+	node_shape.setRadius(radius);
+	for (size_t n=0; n<Nnodes_; n++)
+	{
+		node_shape.setFillColor(color[n]);
 		node_shape.setPosition(screen_x[n],screen_y[n]);
 		w->draw(node_shape);
 	}
