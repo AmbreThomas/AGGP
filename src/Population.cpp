@@ -186,13 +186,8 @@ void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, int iter, int i
 		costs[i] = pop_[i]->getCost();
 		if (iter<itermax)
 		{
-			printf("\tGraph %d (cost %f): ",i+1, costs[i]);
-			if (pop_[i]->checkConnection())
-			{
-				printf("OK\n");
-			} else {
-				printf("\n");
-			}
+			printf("\tGraph %d (cost %f)\n",i+1, costs[i]);
+			pop_[i]->checkConnection();
 		}
 	}
 	double	minmax = *max_element(remember_mins_.begin(), remember_mins_.end());
