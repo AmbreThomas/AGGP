@@ -33,7 +33,7 @@ class Graph
 		void					compute_layout(igraph_matrix_t*);
 		void 					draw(sf::RenderWindow* w, igraph_matrix_t*);
 		void 					mutate(void);
-		bool					IsConnected(void);
+		void					checkConnection(void);
 		//==================== PUBLIC ATTRIBUTES =======================
 		static igraph_real_t	LAW_EXPONENT;
 	protected:

@@ -156,7 +156,7 @@ void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, int iter, int i
 		if (iter<itermax)
 		{
 			printf("\tGraph %d (cost %f): ",i+1, costs[i]);
-			if (pop_[i]->IsConnected())
+			if (pop_[i]->checkConnection())
 			{
 				printf("OK\n");
 			} else {

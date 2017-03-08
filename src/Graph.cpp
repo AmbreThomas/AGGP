@@ -89,6 +89,7 @@ Graph::Graph(Graph* parent1, Graph* parent2, unsigned int crosspt)
 Graph::~Graph()
 {
 	igraph_destroy(graph_);
+	delete graph_;
 }
 
 
@@ -259,23 +260,51 @@ size_t	Graph::getN(void) { return (Nnodes_); }
 
 double	Graph::getCost(void) {	return (cost_); }
 
-bool	Graph::IsConnected(void)
+void	Graph::checkConnection(void)
 {
 	igraph_vector_ptr_t 	complist;
 	igraph_vector_ptr_init(&complist, 0);
 	igraph_decompose(graph_, &complist, IGRAPH_WEAK, -1, 1);
 	int	a	=	(int)igraph_vector_ptr_size(&complist);
-	printf("%d composantes détectées, degrés: ", a);
-	igraph_vector_t		degrees;
-	igraph_vector_init(&degrees, 0);
-	igraph_degree(graph_, &degrees, igraph_vss_all(), IGRAPH_ALL, 1);
-	for (unsigned int i = 0; i<Nnodes_; i++)
+	if (a>1)
 	{
-		printf("%d ",(int)VECTOR(degrees)[i]);
+		igraph_t*			new_graph = new igraph_t;
+		igraph_empty(new_graph, 0, IGRAPH_UNDIRECTED);
+		igraph_integer_t	nodes_in = 0;
+		igraph_integer_t	n_new_nodes, n_new_edges, id1, id2;
+		igraph_vector_t		new_edges;
+		igraph_vector_init(&new_edges,0);
+		for (int i = 0; i<a; i++) // Pour chaque composante non connexe
+		{
+			//Ajouter les noeuds au new_graph
+			n_new_nodes = igraph_vcount((igraph_t*)VECTOR(complist)[i]);
+			igraph_add_vertices(new_graph, n_new_nodes, 0);
+
+			//Ajouter les edges au new_graph
+			igraph_get_edgelist((igraph_t*)VECTOR(complist)[i], &new_edges, 0);
+			n_new_edges	= igraph_vector_size(&new_edges);
+			for (int j = 0; j<n_new_edges-1;  j += 2)
+			{
+				id1 = nodes_in + VECTOR(new_edges)[j];
+				id2 = nodes_in + VECTOR(new_edges)[j+1];
+				igraph_add_edge(new_graph, id1, id2);
+			}
+
+			if (i) // reconnecter la composante avec la précédente
+			{
+				id1 = rand()%nodes_in;
+				id2 = nodes_in + rand()%n_new_nodes;
+				igraph_add_edge(new_graph, id1, id2);
+			}
+			nodes_in += n_new_nodes;
+		}
+		igraph_destroy(graph_);
+		delete graph_;
+		graph_ = new_graph;
+		igraph_simplify(graph_,1,1,0);
+		cost_	=	this->cost();
 	}
-	igraph_vector_destroy(&degrees);
 	igraph_decompose_destroy(&complist);
-	return (a==1);
 }
 //========================== PROTECTED METHODS =========================
 

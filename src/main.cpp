@@ -47,11 +47,7 @@ int		main(int argc, char** argv)
 	RenderWindow	v(VideoMode(400, 400), "Min Cost Evolution");
 	while (iter<itermax and w.isOpen() and v.isOpen() and window.isOpen())
 	{
-		printf("\tAsk for a graph: ");
-		getline(cin, asked_graph);
-		printf("\n");
-		Graph* best_graph = experiment1->getgraph(atoi(asked_graph.c_str()) - 1);
-		//~ Graph* best_graph = experiment1->getbestgraph();
+		Graph* best_graph = experiment1->getbestgraph();
 		best_graph->compute_layout(&coords_);
 		overwatch_window(&window);
 		overwatch_window(&v);
