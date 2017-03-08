@@ -47,7 +47,7 @@ class Population
 //===================== OPERATORS DEFINITIONS ==========================
 
 //=================== INLINE FUNCTIONS DEFINITIONS =====================
-
 void	drawline(float, float, float, float, float, float, sf::RenderWindow*, sf::Color);
+
 #endif // Population_H__
 

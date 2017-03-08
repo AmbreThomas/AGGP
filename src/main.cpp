@@ -24,7 +24,7 @@ int		main(int argc, char** argv)
 		Ngraphs	= 	100;
 		Nnodes	= 	100;
 		Nedges 	= 	300;
-		itermax	=	10;
+		itermax	=	100;
 	} else {
 		Ngraphs	= 	atoi(argv[1]);
 		Nnodes	= 	atoi(argv[2]);
@@ -58,10 +58,10 @@ int		main(int argc, char** argv)
 		v.display();
 		w.display();
 		
-		printf("\n  Iteration %d:\n", ++iter);
+		printf("  Iteration %d:\n", ++iter);
 		experiment1->cross(); 					//population size N ==> 2N
-		//~ experiment1->select_by_tournament();	//population size 2N ==> N
-		experiment1->select_elite();			//population size 2N ==> N
+		experiment1->select_by_tournament();	//population size 2N ==> N
+		//~ experiment1->select_elite();			//population size 2N ==> N
 	}
 	endTime	=	time(NULL);
 	printf("\nComputed in ");

@@ -5,12 +5,13 @@ using namespace std;
 
 //========================= STATIC ATTRIBUTES ==========================
 
+static size_t indice_min(vector<double>);
 
 //=========================== CONSTRUCTORS =============================
 
 Population::Population(unsigned int n, unsigned int Nnodes, unsigned int Nedges, int itermax)
 {
-	pselect_	=	0.02;
+	pselect_	=	0.01;
 	for (unsigned int i = 0; i<n; i++){
 		pop_.push_back(new Graph(Nnodes, Nedges));
 	}
@@ -27,7 +28,6 @@ Population::~Population(void)
 		delete pop_[i];
 	}
 }
-
 
 //=========================== PUBLIC METHODS ===========================
 
@@ -86,11 +86,11 @@ void	Population::select_by_tournament(void)
 		unsigned int			a,b,p;
 		
 		a	=	rand()%currentSize;
-		while (tokeep[a]) a	=	rand()%currentSize;
+		while (tokeep[a]) a	= rand()%currentSize;
 		b	=	a;
-		while (a==b or tokeep[b]) b	=	rand()%currentSize;
+		while (a==b or tokeep[b]) b	= rand()%currentSize;
 		p	=	((double)rand())/RAND_MAX;
-		if (p < pselect_)
+		if (p > pselect_)
 		{
 			/* Garder le pire des deux */
 			if (pop_[a]->getCost() >= pop_[b]->getCost()){
@@ -117,26 +117,6 @@ void	Population::select_by_tournament(void)
 	}
 }
 
-static size_t indice_min(vector<double> tab)
-{
-	size_t		indice;
-	double		cout;
-	size_t		i;
-
-	i = 0;
-	indice = 0;
-	cout = tab[indice];
-	while (i < tab.size())
-	{
-		if (tab[i] < cout)
-		{
-			cout = tab[i];
-			indice = i;
-		}
-		i++;
-	}
-	return (indice);
-}
 
 void	Population::select_elite(void)
 {
@@ -186,7 +166,6 @@ void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, int iter, int i
 		costs[i] = pop_[i]->getCost();
 		if (iter<itermax)
 		{
-			printf("\tGraph %d (cost %f)\n",i+1, costs[i]);
 			pop_[i]->checkConnection();
 		}
 	}
@@ -194,7 +173,9 @@ void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, int iter, int i
 	double	meanmax = *max_element(remember_means_.begin(), remember_means_.end());
 	remember_means_[iter] = accumulate( costs.begin(), costs.end(), 0.0)/(float)costs.size();
 	remember_mins_[iter] = *min_element(costs.begin(), costs.end());
-	if (iter<itermax) printf("\tThe best graph is graph %d.\n", 1+(int)distance(costs.begin(), min_element(costs.begin(), costs.end())));
+	if (iter<itermax) printf("\tThe best graph is graph %d with cost %f.\n",
+	 1+(int)distance(costs.begin(), min_element(costs.begin(), costs.end())),
+	 costs[(int)distance(costs.begin(), min_element(costs.begin(), costs.end()))]);
 	drawline(0,0,itermax,0,(float)itermax,minmax,v,sf::Color::White);
 	drawline(0,0,0,50,(float)itermax,minmax,v,sf::Color::White);
 	drawline(0,0,itermax,0,(float)itermax,meanmax,w,sf::Color::White);
@@ -227,4 +208,26 @@ void	drawline(float x1, float y1, float x2, float y2, float xmax, float ymax, sf
 	line[0].color = col;
 	line[1].color = col;
 	w->draw(line, 2, sf::Lines);
+}
+
+
+static size_t indice_min(vector<double> tab)
+{
+	size_t		indice;
+	double		cout;
+	size_t		i;
+
+	i = 0;
+	indice = 0;
+	cout = tab[indice];
+	while (i < tab.size())
+	{
+		if (tab[i] < cout)
+		{
+			cout = tab[i];
+			indice = i;
+		}
+		i++;
+	}
+	return (indice);
 }

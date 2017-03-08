@@ -301,7 +301,7 @@ void	Graph::checkConnection(void)
 		igraph_destroy(graph_);
 		delete graph_;
 		graph_ = new_graph;
-		igraph_simplify(graph_,1,1,0);
+		//~ igraph_simplify(graph_,1,1,0);
 		cost_	=	this->cost();
 	}
 	igraph_decompose_destroy(&complist);
