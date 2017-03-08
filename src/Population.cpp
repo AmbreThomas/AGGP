@@ -117,7 +117,26 @@ void	Population::select_by_tournament(void)
 	}
 }
 
+static size_t indice_min(vector<double> tab)
+{
+	size_t		indice;
+	double		cout;
+	size_t		i;
 
+	i = 0;
+	indice = 0;
+	cout = tab[indice];
+	while (i < tab.size())
+	{
+		if (tab[i] < cout)
+		{
+			cout = tab[i];
+			indice = i;
+		}
+		i++;
+	}
+	return (indice);
+}
 
 void	Population::select_elite(void)
 {
@@ -126,12 +145,24 @@ void	Population::select_elite(void)
 	 * 
 	 * Attention, pas de sortie des minima locaux ! */
 	 
-	vector<double>	costs(size_, 100);
-	
+	vector<double>		costs(size_, 100);
+	size_t				i;
+	vector<Graph*>		new_pop;
+	size_t				temp;
+
+	i = 0;
 	printf("\tSelecting the graphs' elite...\n");
 	for (unsigned int i = 0; i<size_; i++){
 		costs[i] = pop_[i]->getCost();
 	}
+	while (i < pop_.size() / 2)
+	{
+		temp = indice_min(costs);
+		new_pop.push_back(pop_[temp]);
+		costs.erase(costs.begin() + temp);
+		i++;
+	}
+	pop_ = new_pop;
 }
 
 
