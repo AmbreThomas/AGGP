@@ -14,54 +14,58 @@ int		main(int argc, char** argv)
     unsigned int	iter(0);
     unsigned int	Ngraphs, Nnodes, Nedges, itermax;
 	time_t			startTime, endTime;
+	bool			display;
 	
     srand((unsigned int)time(NULL));
     startTime	=	time(NULL);
     
     //===================== POPULATION GENERATION ======================
-    if (argc<5){
-		printf("./gengraph Ngraphs Nnodes Nedges Niter\n\nusing default parameters...\n\n");
+    if (argc<6){
+		printf("./gengraph Ngraphs Nnodes Nedges Niter display?\n\nusing default parameters...\n\n");
 		Ngraphs	= 	100;
 		Nnodes	= 	100;
 		Nedges 	= 	300;
 		itermax	=	100;
+		display	=	true;
 	} else {
 		Ngraphs	= 	atoi(argv[1]);
 		Nnodes	= 	atoi(argv[2]);
 		Nedges 	= 	atoi(argv[3]);
 		itermax	=	atoi(argv[4]);
+		display	=	atoi(argv[5]);
 	}
 	Population*	experiment1 = new Population(Ngraphs, Nnodes, Nedges, itermax);
 	printf("Creation of %d graphs completed, with %d nodes and %d edges in each.\n", Ngraphs, Nnodes, Nedges);
 	printf("The nodes were built with a power law degree distribution, which power parameter is %f.\n\n", Graph::LAW_EXPONENT);
 	printf("\n");
 	printTime_str(localtime(&startTime));
-	printf(" : Expect end of computation in %d minutes.\n\n", 
-			(int)(Nedges/1000000.0*Ngraphs*itermax));
+	printf(" : Expect end of computation in %d minutes.\n\n", (int)(Nedges/1000000.0*Ngraphs*itermax));
 	
 	//===================== MAIN LOOP ==================================
 	igraph_matrix_t		coords_;
 	string				asked_graph = "1";
-	RenderWindow 	window(VideoMode(400, 400), "Best Biological Network");
-	RenderWindow	w(VideoMode(400, 400), "Average VS Min Cost Evolution");
-	RenderWindow	v(VideoMode(400, 400), "Min Cost Evolution");
+	RenderWindow 		window(VideoMode(800, 800), "Best Biological Network");
+	RenderWindow		w(VideoMode(400, 400), "Average VS Min Cost Evolution");
+	RenderWindow		v(VideoMode(400, 400), "Min Cost Evolution");
 	while (iter<itermax and w.isOpen() and v.isOpen() and window.isOpen())
 	{
-		Graph* best_graph = experiment1->getbestgraph();
-		best_graph->compute_layout(&coords_);
-		overwatch_window(&window);
+		if (display)
+		{
+			Graph* best_graph = experiment1->getbestgraph();
+			best_graph->compute_layout(&coords_);
+			overwatch_window(&window);
+			best_graph->draw(&window, &coords_);
+			window.display();
+		}
 		overwatch_window(&v);
 		overwatch_window(&w);
-		best_graph->draw(&window, &coords_);
 		experiment1->study(&v, &w, iter, itermax);
-		window.display();
 		v.display();
 		w.display();
 		
 		printf("  Iteration %d:\n", ++iter);
 		experiment1->cross(); 					//population size N ==> 2N
 		experiment1->select_by_tournament();	//population size 2N ==> N
-		//~ experiment1->select_elite();			//population size 2N ==> N
 	}
 	endTime	=	time(NULL);
 	printf("\nComputed in ");

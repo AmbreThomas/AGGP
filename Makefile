@@ -11,7 +11,7 @@ OBJ_NAME = $(SRC_NAME:.cpp=.o)
 OBJ = $(addprefix $(OBJ_PATH)/, $(OBJ_NAME))
 
 CC = g++
-CFLAGS = -Wall -Werror -Wextra -g -std=c++14
+CFLAGS = -Wall -Werror -Wextra -g
 
 INCLUDES_PATH = /usr/local/include/igraph
 LIBRARY_PATH = /usr/local/lib
