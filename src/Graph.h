@@ -32,6 +32,9 @@ class Graph
 		double					cost(void);
 		void					compute_layout(igraph_matrix_t*);
 		void 					draw(sf::RenderWindow* w, igraph_matrix_t*);
+		void					substitution(void);
+		void					insertion(void);
+		void					deletion(void);
 		void 					mutate(void);
 		void					checkConnection(void);
 		//==================== PUBLIC ATTRIBUTES =======================
@@ -42,7 +45,9 @@ class Graph
 		//======================= ATTRIBUTES ===========================
 		igraph_t*				graph_;
 		size_t		 			Nnodes_;
-		double					pmut_;
+		float					psub_;
+		float					pins_;
+		float					pdel_;
 		double					cost_;
 };
 
