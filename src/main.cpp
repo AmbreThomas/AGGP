@@ -66,6 +66,7 @@ int		main(int argc, char** argv)
 		printf("  Iteration %d:\n", ++iter);
 		experiment1->cross(); 					//population size N ==> 2N
 		experiment1->select_by_tournament();	//population size 2N ==> N
+		//experiment1->select_elite();
 	}
 	endTime	=	time(NULL);
 	printf("\nComputed in ");

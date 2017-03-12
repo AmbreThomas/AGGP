@@ -16,9 +16,9 @@ Graph::Graph(int n, int edges)
 	psub_	=	0.3;
 	pins_	=	0.3;
 	pdel_	=	0.3;
-	//~ igraph_static_power_law_game(graph_, n, edges, LAW_EXPONENT, -1, 0, 0, 1);
+	igraph_static_power_law_game(graph_, n, edges, LAW_EXPONENT, -1, 0, 0, 1);
 	//~ igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
-	igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
+	//igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
 	igraph_simplify(graph_, 1, 1, 0);
 	cost_	=	this->cost();
 }
@@ -252,9 +252,10 @@ void	Graph::substitution(void)
 	{
 		if ((float)rand()/(float)RAND_MAX < psub_)
 		{
-			
 			igraph_edge(graph_,eid,&from,&to);
 			igraph_delete_edges(graph_,igraph_ess_1(eid));
+			eid--;
+			Nedges--;
 			igraph_decompose(graph_,&complist,IGRAPH_WEAK,-1,1);
 			if (igraph_vector_ptr_size(&complist)>1)
 			{
@@ -276,10 +277,11 @@ void	Graph::substitution(void)
 					igraph_add_edge(graph_,alter,to);
 				}
 			}
+			igraph_decompose_destroy(&complist);
 		}
 		eid++;
 	}
-	igraph_decompose_destroy(&complist);
+	igraph_vector_ptr_destroy(&complist);
 }
 
 void	Graph::insertion(void)
@@ -290,8 +292,31 @@ void	Graph::insertion(void)
 
 void	Graph::deletion(void)
 {
-	// parcourir les edges
-	// chacun a une probabilité d'être effacé
+	igraph_vector_ptr_t complist;
+	igraph_vector_ptr_init(&complist,0);
+	igraph_integer_t from;
+	igraph_integer_t to;
+	igraph_integer_t Nedges=igraph_ecount(graph_);
+	igraph_integer_t eid=0;
+	while (eid<Nedges)
+	{
+		if ((float)rand()/(float)RAND_MAX < psub_)
+		{
+			
+			igraph_edge(graph_,eid,&from,&to);
+			igraph_delete_edges(graph_,igraph_ess_1(eid));
+			eid--;
+			Nedges--;
+			igraph_decompose(graph_,&complist,IGRAPH_WEAK,-1,1);
+			if (igraph_vector_ptr_size(&complist)>1)
+			{
+				igraph_add_edge(graph_,from,to);
+			}
+			igraph_decompose_destroy(&complist);
+		}
+		eid++;
+	}
+	igraph_vector_ptr_destroy(&complist);
 }
 
 void	Graph::mutate(void)
