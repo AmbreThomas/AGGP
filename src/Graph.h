@@ -36,6 +36,8 @@ class Graph
 		void					insertion(void);
 		void					deletion(void);
 		void 					mutate(void);
+		bool					are_neighbors(igraph_integer_t v1, igraph_integer_t v2);
+		bool					is_connected(void);
 		void					checkConnection(void);
 		//==================== PUBLIC ATTRIBUTES =======================
 		static igraph_real_t	LAW_EXPONENT;

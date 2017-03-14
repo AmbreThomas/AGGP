@@ -226,9 +226,6 @@ void	Graph::draw(sf::RenderWindow* w, igraph_matrix_t* coords_)
 		color[n]=sf::Color(r,0,b);
 	}
 	igraph_vector_destroy(&degree);
-	//igraph_vit_t vit;
-	//igraph_vit_create(graph_,vs,&vit);
-	//igraph_vit_destroy(&vit);
 	sf::CircleShape node_shape;
 	node_shape.setRadius(radius);
 	for (size_t n=0; n<Nnodes_; n++)
@@ -241,94 +238,116 @@ void	Graph::draw(sf::RenderWindow* w, igraph_matrix_t* coords_)
 
 void	Graph::substitution(void)
 {
-	igraph_vector_ptr_t complist;
-	igraph_vector_ptr_init(&complist,0);
 	igraph_integer_t from;
 	igraph_integer_t to;
 	igraph_integer_t alter;
-	igraph_integer_t Nedges=igraph_ecount(graph_);
-	igraph_integer_t eid=0;
-	while (eid<Nedges)
+	for (igraph_integer_t eid=igraph_ecount(graph_);eid--;)
 	{
-		if ((float)rand()/(float)RAND_MAX < psub_)
+		if ((float)rand()/(float)RAND_MAX<psub_)
 		{
 			igraph_edge(graph_,eid,&from,&to);
 			igraph_delete_edges(graph_,igraph_ess_1(eid));
-			eid--;
-			Nedges--;
-			igraph_decompose(graph_,&complist,IGRAPH_WEAK,-1,1);
-			if (igraph_vector_ptr_size(&complist)>1)
+			if (!is_connected())
 			{
 				igraph_add_edge(graph_,from,to);
 			}
 			else
 			{
-				alter=from;
-				while ((alter==from)||(alter==to))
+				do
 				{
 					alter=(igraph_integer_t)(rand()%(int)Nnodes_);
 				}
+				while ((alter==from)||(alter==to));
 				if (rand()%2)
 				{
-					igraph_add_edge(graph_,from,alter);
+					if (are_neighbors(from,alter))
+					{
+						igraph_add_edge(graph_,from,alter);
+					}
 				}
 				else
 				{
-					igraph_add_edge(graph_,alter,to);
+					if (are_neighbors(alter,to))
+					{
+						igraph_add_edge(graph_,alter,to);
+					}
 				}
 			}
-			igraph_decompose_destroy(&complist);
 		}
-		eid++;
 	}
-	igraph_vector_ptr_destroy(&complist);
 }
 
 void	Graph::insertion(void)
 {
-	// parcourir les nodes
-	// chacun a une probabilité d'obtenir un edge supplémentaire
+	igraph_integer_t alter;
+	for (igraph_integer_t vid=(igraph_integer_t)Nnodes_;vid--;)
+	{
+		if ((float)rand()/(float)RAND_MAX<pins_)
+		{
+			do
+			{
+				alter=(igraph_integer_t)(rand()%(int)Nnodes_);
+			}
+			while (alter==vid);
+			if (!are_neighbors(vid,alter))
+			{
+				igraph_add_edge(graph_,vid,alter);
+			}
+		}
+	}
 }
 
 void	Graph::deletion(void)
 {
-	igraph_vector_ptr_t complist;
-	igraph_vector_ptr_init(&complist,0);
 	igraph_integer_t from;
 	igraph_integer_t to;
-	igraph_integer_t Nedges=igraph_ecount(graph_);
-	igraph_integer_t eid=0;
-	while (eid<Nedges)
+	for (igraph_integer_t eid=igraph_ecount(graph_);eid--;)
 	{
-		if ((float)rand()/(float)RAND_MAX < psub_)
+		if ((float)rand()/(float)RAND_MAX < pdel_)
 		{
-			
 			igraph_edge(graph_,eid,&from,&to);
 			igraph_delete_edges(graph_,igraph_ess_1(eid));
-			eid--;
-			Nedges--;
-			igraph_decompose(graph_,&complist,IGRAPH_WEAK,-1,1);
-			if (igraph_vector_ptr_size(&complist)>1)
+			if (!is_connected())
 			{
 				igraph_add_edge(graph_,from,to);
 			}
-			igraph_decompose_destroy(&complist);
 		}
-		eid++;
 	}
-	igraph_vector_ptr_destroy(&complist);
 }
 
 void	Graph::mutate(void)
 {
+	deletion();
 	substitution();
 	insertion();
-	deletion();
 }
 
 size_t	Graph::getN(void) { return (Nnodes_); }
 
 double	Graph::getCost(void) {	return (cost_); }
+
+bool	Graph::are_neighbors(igraph_integer_t v1, igraph_integer_t v2)
+{
+	bool neighbors(true);
+	igraph_vector_t neis;
+	igraph_vector_init(&neis,0);
+	igraph_neighbors(graph_,&neis,v1,IGRAPH_ALL);
+	neighbors=(bool)igraph_vector_contains(&neis,(igraph_real_t)v2);
+	igraph_vector_destroy(&neis);
+	return neighbors;
+}
+
+bool	Graph::is_connected(void)
+{
+	bool connectivity(true);
+	igraph_vector_ptr_t components;
+	igraph_vector_ptr_init(&components,0);
+	igraph_decompose(graph_,&components,IGRAPH_WEAK,-1,1);
+	connectivity=(int)igraph_vector_ptr_size(&components)<2;
+	igraph_decompose_destroy(&components);
+	igraph_vector_ptr_destroy(&components);
+	return connectivity;
+}
 
 void	Graph::checkConnection(void)
 {
