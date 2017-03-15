@@ -1,9 +1,7 @@
 NAME = gengraph
 
 SRC_PATH = src
-SRC_NAME = Population.cpp \
-		   main.cpp \
-		   Graph.cpp
+SRC_NAME = main.cpp Population.cpp Graph.cpp
 SRC = $(addprefix $(SRC_PATH)/, $(SRC_NAME))
 
 OBJ_PATH = obj
@@ -22,22 +20,28 @@ CPPFLAGS = -I $(INCLUDES_PATH) -I $(SRC_PATH) -L $(LIBRARY_PATH) -ligraph -lsfml
 all:				$(NAME)
 
 $(NAME):			$(OBJ)
-					export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
-					$(CC) $(OBJ) $(CPPFLAGS) -o $(NAME)
+					@echo ". : Compiling $(NAME)..."
+					@export LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:/usr/local/lib
+					@$(CC) $(OBJ) $(CPPFLAGS) -o $(NAME)
+					@echo ". : Done."
 
 $(OBJ_PATH)/%.o:	$(SRC_PATH)/%.cpp $(SRC_PATH)/%.h
 					@mkdir $(OBJ_PATH) 2> /dev/null || true
-					$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
+					@$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 
 obj/main.o:			$(SRC_PATH)/main.cpp
 					@mkdir $(OBJ_PATH) 2> /dev/null || true
-					$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
+					@$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 
 clean:
-					rm -fv $(OBJ)
+					@echo ". : Deleting $(NAME) objects..."
+					@rm -fv $(OBJ)
 					@rmdir $(OBJ_PATH) 2> /dev/null || true
+					@echo ". : Done."
 
 fclean:				clean
-					rm -fv $(NAME)
+					@echo ". : Deleting $(NAME) executable..."
+					@rm -fv $(NAME)
+					@echo ". : Done."
 
 re:					fclean all
