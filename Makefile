@@ -1,3 +1,5 @@
+DEBUG=yes
+
 NAME = gengraph
 
 SRC_PATH = src
@@ -9,7 +11,11 @@ OBJ_NAME = $(SRC_NAME:.cpp=.o)
 OBJ = $(addprefix $(OBJ_PATH)/, $(OBJ_NAME))
 
 CC = g++
-CFLAGS = -Wall -Werror -Wextra -g
+ifeq ($(DEBUG),yes)
+	CFLAGS = -Wall -Werror -Wextra -g
+else
+	CFLAGS = -march=native -O3 -pipe
+endif
 
 INCLUDES_PATH = /usr/local/include/igraph
 LIBRARY_PATH = /usr/local/lib
