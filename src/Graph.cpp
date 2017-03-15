@@ -13,9 +13,9 @@ Graph::Graph(int n, int edges)
 {
 	graph_	=	new igraph_t;
 	Nnodes_	=	n + edges - edges;
-	psub_	=	0.3;
-	pins_	=	0.3;
-	pdel_	=	0.3;
+	psub_	=	0.1;
+	pins_	=	0.1;
+	pdel_	=	0.1;
 	igraph_static_power_law_game(graph_, n, edges, LAW_EXPONENT, -1, 0, 0, 1);
 	//~ igraph_erdos_renyi_game(graph_, IGRAPH_ERDOS_RENYI_GNM, n, edges, 0, 0);
 	//igraph_barabasi_game(graph_, n, /*power*/ 1.0/(LAW_EXPONENT-1), /*m*/ 1, /*outseq*/ 0, /*outpref*/ 0, /*A*/ 1, /*directed*/ 0, IGRAPH_BARABASI_PSUMTREE, 0);
@@ -241,6 +241,38 @@ void	Graph::substitution(void)
 	igraph_integer_t from;
 	igraph_integer_t to;
 	igraph_integer_t alter;
+	
+	igraph_integer_t eid;
+	for (size_t i = Nnodes_/100; i--;)
+	{
+		eid = (igraph_integer_t)(rand()%(int)igraph_ecount(graph_));
+		if ((float)rand() / (float)RAND_MAX < psub_)
+		{
+			igraph_edge(graph_, eid, &from, &to);
+			igraph_delete_edges(graph_, igraph_ess_1(eid));
+			if (!is_connected())
+				igraph_add_edge(graph_, from, to);
+			else
+			{
+				do
+				{
+					alter = (igraph_integer_t)(rand() % (int)Nnodes_);
+				}
+				while (alter == from || alter == to);
+				if (rand() % 2)
+				{
+					if (!are_neighbors(from, alter))
+						igraph_add_edge(graph_, from, alter);
+				}
+				else
+				{
+					if (!are_neighbors(alter, to))
+						igraph_add_edge(graph_, alter, to);
+				}
+			}
+		}
+	}
+	/*
 	for (igraph_integer_t eid = igraph_ecount(graph_); eid--;)
 	{
 		if ((float)rand() / (float)RAND_MAX < psub_)
@@ -258,22 +290,40 @@ void	Graph::substitution(void)
 				while (alter == from || alter == to);
 				if (rand() % 2)
 				{
-					if (are_neighbors(from, alter))
+					if (!are_neighbors(from, alter))
 						igraph_add_edge(graph_, from, alter);
 				}
 				else
 				{
-					if (are_neighbors(alter, to))
+					if (!are_neighbors(alter, to))
 						igraph_add_edge(graph_, alter, to);
 				}
 			}
 		}
 	}
+	*/
 }
 
 void	Graph::insertion(void)
 {
 	igraph_integer_t alter;
+	
+	igraph_integer_t vid;
+	for (size_t i = Nnodes_/100; i--;)
+	{
+		vid=(igraph_integer_t)(rand()%(int)Nnodes_);
+		if ((float)rand() / (float)RAND_MAX < pins_)
+		{
+			do
+			{
+				alter = (igraph_integer_t)(rand() % (int)Nnodes_);
+			}
+			while (alter == vid);
+			if (!are_neighbors(vid, alter))
+				igraph_add_edge(graph_, vid, alter);
+		}
+	}
+	/*
 	for (igraph_integer_t vid = (igraph_integer_t)Nnodes_; vid--;)
 	{
 		if ((float)rand() / (float)RAND_MAX < pins_)
@@ -287,12 +337,27 @@ void	Graph::insertion(void)
 				igraph_add_edge(graph_, vid, alter);
 		}
 	}
+	*/
 }
 
 void	Graph::deletion(void)
 {
 	igraph_integer_t from;
 	igraph_integer_t to;
+	
+	igraph_integer_t eid;
+	for (size_t i = Nnodes_/100; i--;)
+	{
+		eid=(igraph_integer_t)(rand()%(int)igraph_ecount(graph_));
+		if ((float)rand() / (float)RAND_MAX < pdel_)
+		{
+			igraph_edge(graph_, eid, &from, &to);
+			igraph_delete_edges(graph_, igraph_ess_1(eid));
+			if (!is_connected())
+				igraph_add_edge(graph_, from, to);
+		}
+	}
+	/*
 	for (igraph_integer_t eid = igraph_ecount(graph_); eid--;)
 	{
 		if ((float)rand() / (float)RAND_MAX < pdel_)
@@ -303,6 +368,7 @@ void	Graph::deletion(void)
 				igraph_add_edge(graph_, from, to);
 		}
 	}
+	*/
 }
 
 void	Graph::mutate(void)

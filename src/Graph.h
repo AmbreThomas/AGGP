@@ -32,13 +32,14 @@ class Graph
 		double					cost(void);
 		void					compute_layout(igraph_matrix_t*);
 		void 					draw(sf::RenderWindow* w, igraph_matrix_t*);
-		void					substitution(void);
-		void					insertion(void);
-		void					deletion(void);
 		void 					mutate(void);
-		bool					are_neighbors(igraph_integer_t v1, igraph_integer_t v2);
-		bool					is_connected(void);
+		void 					substitution(void);
+		void 					deletion(void);
+		void 					insertion(void);
 		void					checkConnection(void);
+		bool					are_neighbors(igraph_integer_t, igraph_integer_t);
+		bool					is_connected(void);
+
 		//==================== PUBLIC ATTRIBUTES =======================
 		static igraph_real_t	LAW_EXPONENT;
 	protected:
@@ -47,9 +48,9 @@ class Graph
 		//======================= ATTRIBUTES ===========================
 		igraph_t*				graph_;
 		size_t		 			Nnodes_;
-		float					psub_;
-		float					pins_;
-		float					pdel_;
+		double					psub_;
+		double					pins_;
+		double					pdel_;
 		double					cost_;
 };
 
