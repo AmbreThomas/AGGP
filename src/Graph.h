@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <SFML/Graphics.hpp>
+#include <fstream>
 
 //============================ FUNCTIONS ===============================
 
@@ -30,6 +31,7 @@ class Graph
 		//==================== PUBLIC METHODS ==========================
 		float					average_path_length(void);
 		double					cost(void);
+		size_t					results(void);
 		void					compute_layout(igraph_matrix_t*);
 		void 					draw(sf::RenderWindow* w, igraph_matrix_t*);
 		void 					mutate(void);

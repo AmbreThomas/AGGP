@@ -152,6 +152,35 @@ double 	Graph::cost(void)
 	return (cost);
 }
 
+size_t	Graph::results(void)
+{
+	// degrees
+	igraph_vector_t degree;
+	igraph_vector_init(&degree, Nnodes_);
+	igraph_degree(graph_, &degree, igraph_vss_all(), IGRAPH_ALL, false);
+	// transitivity
+	igraph_vector_t transitivity;
+	igraph_vector_init(&transitivity, Nnodes_);
+	igraph_transitivity_local_undirected(graph_, &transitivity, igraph_vss_all(), IGRAPH_TRANSITIVITY_ZERO);
+	// file
+	fstream fs("results.txt", fstream::trunc | fstream::out);
+	if (fs.is_open())
+	{
+		fs << "degree\ttransitivity" << endl;
+		for (size_t n= Nnodes_; n--;)
+		{
+			fs << (unsigned int)igraph_vector_e(&degree, n) << "\t" << (float)igraph_vector_e(&transitivity, n) << endl;
+		}
+		fs.close();
+	}
+	igraph_vector_destroy(&degree);
+	igraph_vector_destroy(&transitivity);
+	// diameter
+	igraph_integer_t diameter;
+	igraph_diameter(graph_, &diameter, 0, 0, 0, IGRAPH_UNDIRECTED, 0);
+	return (size_t)diameter;
+}
+
 void	Graph::compute_layout(igraph_matrix_t* coords_)
 {
 	igraph_matrix_init(coords_, Nnodes_, 2);

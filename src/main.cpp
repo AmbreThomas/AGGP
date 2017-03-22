@@ -71,6 +71,7 @@ int		main(int argc, char** argv)
 	printf("\nComputed in ");
 	printDiffTime_str((int) difftime(endTime, startTime));
 	printf(".\n");
+	cout << "diameter: " << experiment1->getbestgraph()->results() << endl;
 	
 	//===================== DISPLAY RESULTS ============================
 	Graph* best_graph = experiment1->getbestgraph();
