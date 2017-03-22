@@ -47,7 +47,7 @@ int		main(int argc, char** argv)
 	RenderWindow 		window(VideoMode(800, 800), "Best Biological Network");
 	RenderWindow		w(VideoMode(400, 400), "Average VS Min Cost Evolution");
 	RenderWindow		v(VideoMode(400, 400), "Min Cost Evolution");
-	while (iter<itermax and w.isOpen() and v.isOpen() and window.isOpen())
+	while ((iter<itermax and experiment1->stillEvolves(iter)) and w.isOpen() and v.isOpen() and window.isOpen())
 	{
 		if (display)
 		{

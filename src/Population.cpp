@@ -157,6 +157,25 @@ Graph*	Population::getbestgraph(void)
 }
 
 
+bool	Population::stillEvolves(unsigned int iter)
+{
+	if (iter<101) return (true);
+	double	min = remember_mins_[1];
+	double 	max = remember_mins_[1];
+	for(unsigned int i = iter-100; i < iter; i++)
+	{
+		double 	a = remember_mins_[i];
+		if (a<min) min = a;
+		if (a>max) max = a;
+	}
+	if (max-min < 0.001)
+	{
+		printf("Quitting because a convergence has been detected.");
+		return (false);
+	}
+	else return (true);
+}
+
 void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, int iter, int itermax)
 {
 	vector<double>	costs(pop_.size());

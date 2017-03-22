@@ -28,6 +28,7 @@ class Population
 		void				select_by_tournament(void);
 		void				select_elite(void);
 		void				study(sf::RenderWindow*, sf::RenderWindow*, int, int);
+		bool				stillEvolves(unsigned int);
 	protected:
 		//==================== PROTECTED METHODS =======================
 		
