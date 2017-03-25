@@ -68,10 +68,11 @@ int		main(int argc, char** argv)
 		experiment1->select_by_tournament();	//population size 2N ==> N
 	}
 	endTime	=	time(NULL);
-	printf("\nComputed in ");
+	printf(" displaying best graph. Computed in ");
 	printDiffTime_str((int) difftime(endTime, startTime));
-	printf(".\n");
-	cout << "diameter: " << experiment1->getbestgraph()->results() << endl;
+	printf(".\n\n");
+	cout << "Graph diameter:\t" << experiment1->getbestgraph()->results() << endl;
+	cout << "Total time:\t" << (int) difftime(endTime, startTime) << endl;
 	
 	//===================== DISPLAY RESULTS ============================
 	Graph* best_graph = experiment1->getbestgraph();
