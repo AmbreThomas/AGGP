@@ -113,8 +113,8 @@ void	printTime_str(const struct tm *timeptr)
 void	printDiffTime_str(int diff)
 {
 	int	days	=	(int) diff/86400;
-	int	hours	=	(int) diff/3600;
-	int	min		=	(int) diff/60;
+	int	hours	=	(int) (diff-days*86400)/3600;
+	int	min		=	(int) (diff-days*86400-hours*3600)/60;
 	int	sec		=	(int) diff%60;
 	if (days) 	printf("%dd ", days);
 	if (hours) 	printf("%d° ", hours);
