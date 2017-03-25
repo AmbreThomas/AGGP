@@ -39,7 +39,7 @@ int		main(int argc, char** argv)
 	Population*	experiment1 = new Population(Ngraphs, Nnodes, Nedges, itermax);
 	printf("Creation of %d graphs completed, with %d nodes and %d edges in each.\n", Ngraphs, Nnodes, Nedges);
 	printTime_str(localtime(&startTime));
-	printf(" : Expect end of computation in %d minutes.\n", (int)(Nedges/1000000.0*Ngraphs*itermax));
+	printf(" \n");
 	
 	//===================== MAIN LOOP ==================================
 	igraph_matrix_t		coords_;
@@ -75,19 +75,19 @@ int		main(int argc, char** argv)
 	cout << "Total time:\t" << (int) difftime(endTime, startTime) << endl;
 	
 	//===================== DISPLAY RESULTS ============================
-	Graph* best_graph = experiment1->getbestgraph();
-	best_graph->compute_layout(&coords_);
-	while (window.isOpen() and w.isOpen() and v.isOpen())
-	{
-		overwatch_window(&v);
-		overwatch_window(&w);
-		overwatch_window(&window);
-		best_graph->draw(&window, &coords_);
-		experiment1->study(&v, &w, &window, iter, itermax);
-		window.display();
-		v.display();
-		w.display();
-	}
+	//~ Graph* best_graph = experiment1->getbestgraph();
+	//~ best_graph->compute_layout(&coords_);
+	//~ while (window.isOpen() and w.isOpen() and v.isOpen())
+	//~ {
+		//~ overwatch_window(&v);
+		//~ overwatch_window(&w);
+		//~ overwatch_window(&window);
+		//~ best_graph->draw(&window, &coords_);
+		//~ experiment1->study(&v, &w, &window, iter, itermax);
+		//~ window.display();
+		//~ v.display();
+		//~ w.display();
+	//~ }
 	if (v.isOpen()) v.close();
 	if (w.isOpen()) w.close();
 	if (window.isOpen()) window.close();
