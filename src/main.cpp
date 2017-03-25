@@ -63,7 +63,7 @@ int		main(int argc, char** argv)
 		v.display();
 		w.display();
 		
-		printf("  Iteration %d:\n", ++iter);
+		printf("  Iteration %d:", ++iter);
 		experiment1->cross(); 					//population size N ==> 2N
 		experiment1->select_by_tournament();	//population size 2N ==> N
 	}

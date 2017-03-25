@@ -47,7 +47,7 @@ void	Population::cross(void)
 	 
 	unsigned int	i,j, crosspt;
 	
-	printf("\tCrossing graphs...\n");
+	//printf("\tCrossing graphs...\n");
 	while (pop_.size()<2*size_)
 	{
 		i 	= 	rand()%(int)size_;
@@ -80,7 +80,7 @@ void	Population::select_by_tournament(void)
 	size_t					currentSize		=	pop_.size();
 	vector<unsigned int>	tokeep(currentSize,0);
 	
-	printf("\tSelecting graphs by tournament...\n");
+	//printf("\tSelecting graphs by tournament...\n");
 	for (size_t i = 0; i<size_; i++)
 	{
 		unsigned int			a,b,p;
@@ -131,7 +131,7 @@ void	Population::select_elite(void)
 	size_t				temp;
 
 	i = 0;
-	printf("\tSelecting the graphs' elite...\n");
+	//printf("\tSelecting the graphs' elite...\n");
 	for (unsigned int i = 0; i<size_; i++){
 		costs[i] = pop_[i]->getCost();
 	}
@@ -192,9 +192,9 @@ void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, int iter, int i
 	double	meanmax = *max_element(remember_means_.begin(), remember_means_.end());
 	remember_means_[iter] = accumulate( costs.begin(), costs.end(), 0.0)/(float)costs.size();
 	remember_mins_[iter] = *min_element(costs.begin(), costs.end());
-	if (iter<itermax) printf("\tThe best graph is graph %d with cost %f.\n",
-	 1+(int)distance(costs.begin(), min_element(costs.begin(), costs.end())),
-	 costs[(int)distance(costs.begin(), min_element(costs.begin(), costs.end()))]);
+	if (iter<itermax) printf("\tbest cost: %f (graph %d)\n",
+	 costs[(int)distance(costs.begin(), min_element(costs.begin(), costs.end()))],
+	 1+(int)distance(costs.begin(), min_element(costs.begin(), costs.end())));
 	drawline(0,0,itermax,0,(float)itermax,minmax,v,sf::Color::White);
 	drawline(0,0,0,50,(float)itermax,minmax,v,sf::Color::White);
 	drawline(0,0,itermax,0,(float)itermax,meanmax,w,sf::Color::White);
