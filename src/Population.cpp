@@ -5,7 +5,9 @@ using namespace std;
 
 //========================= STATIC ATTRIBUTES ==========================
 
-static size_t indice_min(vector<double>);
+static size_t 	indice_min(vector<double>);
+static sf::Font	font;
+
 
 //=========================== CONSTRUCTORS =============================
 
@@ -18,6 +20,7 @@ Population::Population(unsigned int n, unsigned int Nnodes, unsigned int Nedges,
 	remember_means_	= vector<double> (itermax, 0);
 	remember_mins_	= vector<double> (itermax, 0);
 	size_ 	=	n;
+	font.loadFromFile("src/font.TTF");
 }
 
 //=========================== DESTRUCTORS ==============================
@@ -176,7 +179,7 @@ bool	Population::stillEvolves(unsigned int iter)
 	else return (true);
 }
 
-void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, int iter, int itermax)
+void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, sf::RenderWindow* window, int iter, int itermax)
 {
 	vector<double>	costs(pop_.size());
 	
@@ -192,9 +195,15 @@ void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, int iter, int i
 	double	meanmax = *max_element(remember_means_.begin(), remember_means_.end());
 	remember_means_[iter] = accumulate( costs.begin(), costs.end(), 0.0)/(float)costs.size();
 	remember_mins_[iter] = *min_element(costs.begin(), costs.end());
-	if (iter<itermax) printf("\tbest cost: %f (graph %d)\n",
-	 costs[(int)distance(costs.begin(), min_element(costs.begin(), costs.end()))],
-	 1+(int)distance(costs.begin(), min_element(costs.begin(), costs.end())));
+	sf::Text text;
+	char		buffer[100];
+	text.setFont(font);
+	text.setCharacterSize(24);
+	sprintf(buffer," Iteration %d : best graph of cost %f (graph %d)\n", 
+	   iter,
+	   costs[(int)distance(costs.begin(), min_element(costs.begin(), costs.end()))], 
+	   1+(int)distance(costs.begin(), min_element(costs.begin(), costs.end())));
+	text.setString(buffer);
 	drawline(0,0,itermax,0,(float)itermax,minmax,v,sf::Color::White);
 	drawline(0,0,0,50,(float)itermax,minmax,v,sf::Color::White);
 	drawline(0,0,itermax,0,(float)itermax,meanmax,w,sf::Color::White);
@@ -204,6 +213,7 @@ void	Population::study(sf::RenderWindow* v, sf::RenderWindow* w, int iter, int i
 		drawline(i, remember_mins_[i], i+1, remember_mins_[i+1], (float)itermax, meanmax, w, sf::Color::Green);
 		drawline(i, remember_mins_[i], i+1, remember_mins_[i+1], (float)itermax, minmax, v, sf::Color::Green);
 	}
+	window->draw(text);
 }
 //========================== PROTECTED METHODS =========================
 

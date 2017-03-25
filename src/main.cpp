@@ -15,7 +15,9 @@ int		main(int argc, char** argv)
     unsigned int	Ngraphs, Nnodes, Nedges, itermax;
 	time_t			startTime, endTime;
 	bool			display;
+	//~ Font			font;
 	
+	//~ font.loadFromFile("src/font.TTF");
     srand((unsigned int)time(NULL));
     startTime	=	time(NULL);
     
@@ -49,21 +51,21 @@ int		main(int argc, char** argv)
 	RenderWindow		v(VideoMode(400, 400), "Min Cost Evolution");
 	while ((iter<itermax and experiment1->stillEvolves(iter)) and w.isOpen() and v.isOpen() and window.isOpen())
 	{
+		overwatch_window(&window);
+		overwatch_window(&v);
+		overwatch_window(&w);
 		if (display)
 		{
 			Graph* best_graph = experiment1->getbestgraph();
 			best_graph->compute_layout(&coords_);
-			overwatch_window(&window);
 			best_graph->draw(&window, &coords_);
-			window.display();
 		}
-		overwatch_window(&v);
-		overwatch_window(&w);
-		experiment1->study(&v, &w, iter, itermax);
+		experiment1->study(&v, &w, &window, iter, itermax);
+		window.display();
 		v.display();
 		w.display();
 		
-		printf("  Iteration %d:", ++iter);
+		++iter;
 		experiment1->cross(); 					//population size N ==> 2N
 		experiment1->select_by_tournament();	//population size 2N ==> N
 	}
@@ -77,20 +79,16 @@ int		main(int argc, char** argv)
 	//===================== DISPLAY RESULTS ============================
 	Graph* best_graph = experiment1->getbestgraph();
 	best_graph->compute_layout(&coords_);
-	while (window.isOpen() or (w.isOpen() and v.isOpen()))
+	while (window.isOpen() and w.isOpen() and v.isOpen())
 	{
-		if (window.isOpen()){
-			overwatch_window(&window);
-			best_graph->draw(&window, &coords_);
-			window.display();
-		}
-		if (v.isOpen() and w.isOpen()){
-			overwatch_window(&v);
-			overwatch_window(&w);
-			experiment1->study(&v, &w, itermax, itermax);
-			v.display();
-			w.display();
-		}
+		overwatch_window(&v);
+		overwatch_window(&w);
+		overwatch_window(&window);
+		best_graph->draw(&window, &coords_);
+		experiment1->study(&v, &w, &window, itermax, itermax);
+		window.display();
+		v.display();
+		w.display();
 	}
 	if (v.isOpen()) v.close();
 	if (w.isOpen()) w.close();
