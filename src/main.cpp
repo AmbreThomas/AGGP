@@ -23,7 +23,7 @@ int		main(int argc, char** argv)
     
     //===================== POPULATION GENERATION ======================
     if (argc<6){
-		printf("./gengraph Ngraphs Nnodes Nedges Niter display?\n\nusing default parameters...\n\n");
+		printf("./gengraph Ngraphs Nnodes Nedges Niter display?\nusing default parameters...\n\n");
 		Ngraphs	= 	100;
 		Nnodes	= 	100;
 		Nedges 	= 	300;
@@ -38,10 +38,8 @@ int		main(int argc, char** argv)
 	}
 	Population*	experiment1 = new Population(Ngraphs, Nnodes, Nedges, itermax);
 	printf("Creation of %d graphs completed, with %d nodes and %d edges in each.\n", Ngraphs, Nnodes, Nedges);
-	printf("The nodes were built with a power law degree distribution, which power parameter is %f.\n\n", Graph::LAW_EXPONENT);
-	printf("\n");
 	printTime_str(localtime(&startTime));
-	printf(" : Expect end of computation in %d minutes.\n\n", (int)(Nedges/1000000.0*Ngraphs*itermax));
+	printf(" : Expect end of computation in %d minutes.\n", (int)(Nedges/1000000.0*Ngraphs*itermax));
 	
 	//===================== MAIN LOOP ==================================
 	igraph_matrix_t		coords_;
@@ -85,7 +83,7 @@ int		main(int argc, char** argv)
 		overwatch_window(&w);
 		overwatch_window(&window);
 		best_graph->draw(&window, &coords_);
-		experiment1->study(&v, &w, &window, itermax, itermax);
+		experiment1->study(&v, &w, &window, iter, itermax);
 		window.display();
 		v.display();
 		w.display();
@@ -96,7 +94,7 @@ int		main(int argc, char** argv)
 	igraph_matrix_destroy(&coords_);
 	delete experiment1;
 	
-	return 0;
+	return (int) difftime(endTime, startTime);
 }
 
 void	printTime_str(const struct tm *timeptr)

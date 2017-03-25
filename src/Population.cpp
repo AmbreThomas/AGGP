@@ -162,10 +162,10 @@ Graph*	Population::getbestgraph(void)
 
 bool	Population::stillEvolves(unsigned int iter)
 {
-	if (iter<101) return (true);
+	if (iter<51) return (true);
 	double	min = remember_mins_[1];
-	double 	max = remember_mins_[1];
-	for(unsigned int i = iter-100; i < iter; i++)
+	double 	max = 0;
+	for(unsigned int i = iter-50; i < iter; i++)
 	{
 		double 	a = remember_mins_[i];
 		if (a<min) min = a;
@@ -173,7 +173,7 @@ bool	Population::stillEvolves(unsigned int iter)
 	}
 	if (max-min < 0.001)
 	{
-		printf("Quitting because a convergence has been detected.");
+		printf("Quitting because a convergence has been detected.\n");
 		return (false);
 	}
 	else return (true);
