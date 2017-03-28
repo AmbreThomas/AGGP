@@ -27,7 +27,7 @@ int		main(int argc, char** argv)
 		Ngraphs	= 	100;
 		Nnodes	= 	100;
 		Nedges 	= 	300;
-		itermax	=	1000;
+		itermax	=	200;
 		display	=	true;
 	} else {
 		Ngraphs	= 	atoi(argv[1]);
@@ -75,19 +75,19 @@ int		main(int argc, char** argv)
 	cout << "Total time:\t" << (int) difftime(endTime, startTime) << endl;
 	
 	//===================== DISPLAY RESULTS ============================
-	//~ Graph* best_graph = experiment1->getbestgraph();
-	//~ best_graph->compute_layout(&coords_);
-	//~ while (window.isOpen() and w.isOpen() and v.isOpen())
-	//~ {
-		//~ overwatch_window(&v);
-		//~ overwatch_window(&w);
-		//~ overwatch_window(&window);
-		//~ best_graph->draw(&window, &coords_);
-		//~ experiment1->study(&v, &w, &window, iter, itermax);
-		//~ window.display();
-		//~ v.display();
-		//~ w.display();
-	//~ }
+	Graph* best_graph = experiment1->getbestgraph();
+	best_graph->compute_layout(&coords_);
+	while (window.isOpen() and w.isOpen() and v.isOpen())
+	{
+		overwatch_window(&v);
+		overwatch_window(&w);
+		overwatch_window(&window);
+		best_graph->draw(&window, &coords_);
+		experiment1->study(&v, &w, &window, iter, itermax);
+		window.display();
+		v.display();
+		w.display();
+	}
 	if (v.isOpen()) v.close();
 	if (w.isOpen()) w.close();
 	if (window.isOpen()) window.close();

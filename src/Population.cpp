@@ -13,7 +13,7 @@ static sf::Font	font;
 
 Population::Population(unsigned int n, unsigned int Nnodes, unsigned int Nedges, int itermax)
 {
-	pselect_	=	0.99;
+	pselect_	=	0.1;
 	for (unsigned int i = 0; i<n; i++){
 		pop_.push_back(new Graph(Nnodes, Nedges));
 	}
